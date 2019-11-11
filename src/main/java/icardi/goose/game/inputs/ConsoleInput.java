@@ -2,6 +2,7 @@ package icardi.goose.game.inputs;
 
 import java.util.Optional;
 
+import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.CommandParser;
 import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.GameCommand;
@@ -12,7 +13,8 @@ public class ConsoleInput implements GameInput
 {
     private CommandParser[] _parsers = {
         StartCommand.parser(),
-        ExitCommand.parser()
+        ExitCommand.parser(),
+        AddPlayerCommand.parser()
     };
 
     @Override

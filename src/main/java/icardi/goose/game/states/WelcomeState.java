@@ -7,7 +7,8 @@ public class WelcomeState implements GameState {
 
     @Override
     public String render() {
-        return "==Welcome to goose-game==\n" + 
+        return 
+        "🦆  Welcome to goose-game 🦢\n" +
          " type `start` and press ENTER to start a game, `exit` to close game.";
     }
 

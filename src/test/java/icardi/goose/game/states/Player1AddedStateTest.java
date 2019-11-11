@@ -5,25 +5,25 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import icardi.goose.game.Player;
-import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.VoidCommand;
 
-public class NoPlayerStateTest 
+public class Player1AddedStateTest 
 {
-    NoPlayerState target = new NoPlayerState();
+    Player1AddedState target = new Player1AddedState(new Player("Clark"));
 
     @Test
     public void shouldRender()
     {
+        assertTrue( target.render().contains("players: Clark") );
         assertTrue( target.render().contains("add player") );
     }
 
-    @Test
-    public void shouldGoToNoPlayerStateWhenReceivingAddPlayerCommand()
-    {
-        Player1AddedState expected = new Player1AddedState(new Player("peter"));
-        assertTrue( target.processCommand(new AddPlayerCommand("peter")).equals(expected));
-    }
+    // @Test
+    // public void shouldGoToNoPlayerStateWhenReceivingAddPlayerCommand()
+    // {
+    //     Player1AddedState expected = new Player1AddedState(new Player("peter"));
+    //     assertTrue( target.processCommand(new AddPlayerCommand("peter")).equals(expected));
+    // }
 
     @Test
     public void shouldGoToErrorStateForAnInvalidCommand()
