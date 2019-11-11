@@ -7,7 +7,13 @@ A Java 11 exercise. Implement a console goose-game.
 
 Requirements:
 
-    - **Java 11** (developed with OpenJDK)
+- **Java JDK 11**
+- Maven 3.6.0
+
+Development environment:
+
+- Visual Studio Code
+- OpenJDK 11
 
 Run unit tests:
 
