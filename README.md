@@ -3,6 +3,10 @@
 A Java 11 exercise. Implement a console goose-game.
 
 
+## Implementation details
+
+TODO
+
 ## Usage
 
 Requirements:
@@ -14,6 +18,7 @@ Development environment:
 
 - Visual Studio Code
 - OpenJDK 11
+- Ubuntu Linux
 
 Run unit tests:
 
