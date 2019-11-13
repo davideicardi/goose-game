@@ -9,7 +9,7 @@ public class NoPlayerState implements GameState {
     @Override
     public String render()
     {
-        return " Insert the first player by typing: add player {yourName}";
+        return " Insert the first player by typing: `add player {yourName}`";
     }
 
     @Override

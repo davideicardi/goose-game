@@ -5,6 +5,7 @@ public class ConsoleOutput implements GameOutput {
     @Override
     public void display(String msg)
     {
+        System.out.println( "" );
         System.out.println( msg );
     }
     

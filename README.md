@@ -6,6 +6,10 @@ A Java 11 exercise. Implement a console goose-game.
 ## Implementation details
 
 TODO
+- state machine (similar to Akka FSM)
+- unit tests
+- case classes like (commands, state)
+- over enginered
 
 ## Usage
 

@@ -28,6 +28,16 @@ public class ParserTest
     }
 
     @Test
+    public void ParseMoveCommand()
+    {
+        assertTrue( target.parse("move davide 1, 4").equals(new MoveCommand("davide", 1, 4)) );
+
+        assertTrue( target.parse("move davide 0, 4").equals(VoidCommand.value) );
+        assertTrue( target.parse("move davide 4").equals(VoidCommand.value) );
+        assertTrue( target.parse("move davide 1, 8").equals(VoidCommand.value) );
+    }
+
+    @Test
     public void ParseExitCommand()
     {
         assertTrue( target.parse("exit") instanceof ExitCommand );

@@ -20,7 +20,7 @@ public class ErrorState implements GameState {
     @Override
     public String render()
     {
-        return String.format("%s\n%s", error, rollbackState.render());
+        return String.format(" %s\n%s", error, rollbackState.render());
     }
 
     @Override
@@ -31,6 +31,10 @@ public class ErrorState implements GameState {
 
     public GameState getRollbackState() {
         return rollbackState;
+    }
+
+    public String getError() {
+        return this.error;
     }
 
     @Override

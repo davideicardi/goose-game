@@ -9,6 +9,7 @@ public class ConsoleInput implements GameInput
     @Override
     public GameCommand waitForCommand()
     {
+        System.out.print( ">" );
         String line = System.console().readLine();
 
         return parser.parse(line);

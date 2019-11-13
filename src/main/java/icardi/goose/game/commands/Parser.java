@@ -6,7 +6,8 @@ public class Parser {
     private CommandParser[] _parsers = {
         StartCommand.parser(),
         ExitCommand.parser(),
-        AddPlayerCommand.parser()
+        AddPlayerCommand.parser(),
+        MoveCommand.parser()
     };
 
     public GameCommand parse(String line) {
