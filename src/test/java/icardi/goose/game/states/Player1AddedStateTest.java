@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import icardi.goose.game.Player;
+import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.VoidCommand;
 
 public class Player1AddedStateTest 
@@ -18,12 +19,22 @@ public class Player1AddedStateTest
         assertTrue( target.render().contains("add player") );
     }
 
-    // @Test
-    // public void shouldGoToNoPlayerStateWhenReceivingAddPlayerCommand()
-    // {
-    //     Player1AddedState expected = new Player1AddedState(new Player("peter"));
-    //     assertTrue( target.processCommand(new AddPlayerCommand("peter")).equals(expected));
-    // }
+    @Test
+    public void shouldGoToPlayer2AddedStateWhenReceivingAddPlayerCommand()
+    {
+        Player2AddedState expected = new Player2AddedState(
+            new Player("Clark"),
+            new Player("Peter"));
+        assertTrue( target.processCommand(new AddPlayerCommand("Peter")).equals(expected));
+    }
+
+    @Test
+    public void shouldGoToErrorStateWhenReceivingADuplicatedPlayer()
+    {
+        ErrorState expected = new ErrorState("Clark: already existing player", target);
+        GameState result = target.processCommand(new AddPlayerCommand("Clark"));
+        assertTrue( result.equals(expected));
+    }
 
     @Test
     public void shouldGoToErrorStateForAnInvalidCommand()

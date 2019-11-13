@@ -17,6 +17,24 @@ public class WelcomeState implements GameState {
         if (command instanceof StartCommand) {
             return new NoPlayerState();
         }
-        return new ErrorState("Invalid operation", this);
+        return new ErrorState(ErrorState.INVALID_OPERATION, this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // self check
+        if (this == o) {
+            return true;
+        }
+        // null check
+        if (o == null) {
+            return false;
+        }
+        // type check and cast
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+
+        return true;
     }
 }

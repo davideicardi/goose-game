@@ -19,6 +19,24 @@ public class NoPlayerState implements GameState {
             AddPlayerCommand apc = (AddPlayerCommand)command;
             return new Player1AddedState(new Player(apc.getName()));
         }
-        return new ErrorState("Invalid operation", this);
+        return new ErrorState(ErrorState.INVALID_OPERATION, this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // self check
+        if (this == o) {
+            return true;
+        }
+        // null check
+        if (o == null) {
+            return false;
+        }
+        // type check and cast
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+
+        return true;
     }
 }

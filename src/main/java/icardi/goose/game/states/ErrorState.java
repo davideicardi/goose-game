@@ -1,8 +1,12 @@
 package icardi.goose.game.states;
 
+import java.util.Objects;
+
 import icardi.goose.game.commands.GameCommand;
 
 public class ErrorState implements GameState {
+
+    public static final String INVALID_OPERATION = "Invalid operation";
 
     private String error;
     private GameState rollbackState;
@@ -28,4 +32,25 @@ public class ErrorState implements GameState {
     public GameState getRollbackState() {
         return rollbackState;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        // self check
+        if (this == o) {
+            return true;
+        }
+        // null check
+        if (o == null) {
+            return false;
+        }
+        // type check and cast
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        ErrorState other = (ErrorState)o;
+        // field comparison
+        return Objects.equals(error, other.error)
+        && Objects.equals(rollbackState, other.rollbackState);
+    }
+
 }
