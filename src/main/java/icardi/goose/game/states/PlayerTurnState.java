@@ -2,8 +2,8 @@ package icardi.goose.game.states;
 
 import java.util.Objects;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.Player;
-import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.MoveCommand;
 import icardi.goose.game.inputs.GameInput;
@@ -34,7 +34,7 @@ public class PlayerTurnState implements GameState {
     }
 
     @Override
-    public GameState process(GameInput input) {
+    public GameState process(Game game, GameInput input) {
         GameCommand command = input.waitForCommand();
         
         final String INVALID_DICE_VALUE = "Invalid dice value, must be between 1 and 6";

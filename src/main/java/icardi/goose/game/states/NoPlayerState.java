@@ -1,5 +1,6 @@
 package icardi.goose.game.states;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.GameCommand;
@@ -14,7 +15,7 @@ public class NoPlayerState implements GameState {
     }
 
     @Override
-    public GameState process(GameInput input) {
+    public GameState process(Game game, GameInput input) {
         GameCommand command = input.waitForCommand();
 
         if (command instanceof AddPlayerCommand) {

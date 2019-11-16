@@ -1,9 +1,11 @@
 package icardi.goose.game.states;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.MoveCommand;
@@ -40,7 +42,7 @@ public class PlayerTurnStateTest
     @Test
     public void shouldNotAllowToMoveTheWrongPlayer()
     {
-        GameState returnState = target.process(() -> new MoveCommand("Peter", 1, 2));
+        GameState returnState = target.process(mock(Game.class), () -> new MoveCommand("Peter", 1, 2));
         assertTrue( returnState instanceof ErrorState );
 
         assertTrue( ((ErrorState)returnState).getError().equals("It's not your turn") );
@@ -53,15 +55,15 @@ public class PlayerTurnStateTest
         final String INVALID_DICE_VALUE = "Invalid dice value, must be between 1 and 6";
 
         assertTrue(
-            ((ErrorState)target.process(() -> new MoveCommand("Clark", 0, 2)))
+            ((ErrorState)target.process(mock(Game.class), () -> new MoveCommand("Clark", 0, 2)))
             .getError().equals(INVALID_DICE_VALUE)
             );
         assertTrue(
-            ((ErrorState)target.process(() -> new MoveCommand("Clark", 1, -4)))
+            ((ErrorState)target.process(mock(Game.class), () -> new MoveCommand("Clark", 1, -4)))
             .getError().equals(INVALID_DICE_VALUE)
             );
         assertTrue(
-            ((ErrorState)target.process(() -> new MoveCommand("Clark", 7, 2)))
+            ((ErrorState)target.process(mock(Game.class), () -> new MoveCommand("Clark", 7, 2)))
             .getError().equals(INVALID_DICE_VALUE)
             );
     }
@@ -80,7 +82,7 @@ public class PlayerTurnStateTest
             new Player("Peter"),
             new MoveCommand("Clark", 1, 2));
 
-        GameState state = currentTarget.process(() -> new MoveCommand("Clark", 1, 2));
+        GameState state = currentTarget.process(mock(Game.class), () -> new MoveCommand("Clark", 1, 2));
 
         assertTrue(state.equals(expectedStep));
     }
@@ -99,7 +101,7 @@ public class PlayerTurnStateTest
             new Player("Peter", 6),
             new MoveCommand("Peter", 1, 2));
 
-        GameState state = currentTarget.process(() -> new MoveCommand("Peter", 1, 2));
+        GameState state = currentTarget.process(mock(Game.class), () -> new MoveCommand("Peter", 1, 2));
 
         assertTrue(state.equals(expectedStep));
     }
@@ -108,13 +110,13 @@ public class PlayerTurnStateTest
     public void shouldGoToExitStateWhenReceivingExitCommand()
     {
         ExitState expected = new ExitState();
-        assertTrue( target.process(() -> new ExitCommand()).equals(expected));
+        assertTrue( target.process(mock(Game.class), () -> new ExitCommand()).equals(expected));
     }
 
     @Test
     public void shouldGoToErrorStateForAnInvalidCommand()
     {
-        GameState returnState = target.process(() -> VoidCommand.value);
+        GameState returnState = target.process(mock(Game.class), () -> VoidCommand.value);
         assertTrue( returnState instanceof ErrorState );
         assertTrue( ((ErrorState)returnState).getRollbackState().equals(target) );
     }
@@ -128,7 +130,7 @@ public class PlayerTurnStateTest
             true
             );
 
-        GameState returnState = currentTarget.process(() -> new MoveCommand("Peter", 1, 2));
+        GameState returnState = currentTarget.process(mock(Game.class), () -> new MoveCommand("Peter", 1, 2));
         assertTrue( returnState instanceof ErrorState );
         assertTrue( ((ErrorState)returnState).getError().equals("It's not your turn") );
         assertTrue( ((ErrorState)returnState).getRollbackState().equals(currentTarget) );
@@ -143,7 +145,7 @@ public class PlayerTurnStateTest
             true
             );
 
-        GameState returnState = currentTarget.process(() -> new MoveCommand("Clark", 8, 2));
+        GameState returnState = currentTarget.process(mock(Game.class), () -> new MoveCommand("Clark", 8, 2));
         assertTrue( returnState instanceof ErrorState );
         assertTrue( ((ErrorState)returnState).getError().equals("Invalid dice value, must be between 1 and 6") );
         assertTrue( ((ErrorState)returnState).getRollbackState().equals(currentTarget) );

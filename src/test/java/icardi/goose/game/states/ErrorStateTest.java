@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.commands.VoidCommand;
 
 public class ErrorStateTest 
@@ -27,8 +28,8 @@ public class ErrorStateTest
         when(rollbackState.render()).thenReturn("Some state");
         ErrorState target = new ErrorState("My error", rollbackState);
 
-        target.process(() -> VoidCommand.value);
+        target.process(mock(Game.class), () -> VoidCommand.value);
 
-        verify(rollbackState).process(any());
+        verify(rollbackState).process(any(), any());
     }
 }

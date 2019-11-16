@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.VoidCommand;
 import icardi.goose.game.inputs.GameInput;
@@ -29,14 +30,14 @@ public class Player2AddedStateTest
             new Player("Clark"),
             new Player("Peter"),
             true);
-        assertTrue( target.process(() -> VoidCommand.value).equals(expected));
+        assertTrue( target.process(mock(Game.class), () -> VoidCommand.value).equals(expected));
     }
 
     @Test
     public void shouldNotAskForNewCommands()
     {
         GameInput mockInput = mock(GameInput.class);
-        target.process(mockInput);
+        target.process(mock(Game.class), mockInput);
         verify(mockInput, never()).waitForCommand();
     }
 }

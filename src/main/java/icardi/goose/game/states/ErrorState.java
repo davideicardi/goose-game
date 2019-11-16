@@ -2,6 +2,7 @@ package icardi.goose.game.states;
 
 import java.util.Objects;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.inputs.GameInput;
 
 public class ErrorState implements GameState {
@@ -23,8 +24,8 @@ public class ErrorState implements GameState {
     }
 
     @Override
-    public GameState process(GameInput input) {
-        return rollbackState.process(input);
+    public GameState process(Game game, GameInput input) {
+        return rollbackState.process(game, input);
     }
 
     public GameState getRollbackState() {

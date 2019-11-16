@@ -2,6 +2,7 @@ package icardi.goose.game.states;
 
 import java.util.Objects;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.inputs.GameInput;
 
@@ -27,7 +28,7 @@ public class Player2AddedState implements GameState {
     }
 
     @Override
-    public GameState process(GameInput input) {
+    public GameState process(Game game, GameInput input) {
         return new PlayerTurnState(player1, player2, true);
     }
 

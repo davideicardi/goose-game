@@ -1,9 +1,11 @@
 package icardi.goose.game.states;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.ExitCommand;
@@ -23,20 +25,20 @@ public class NoPlayerStateTest
     public void shouldGoToNoPlayerStateWhenReceivingAddPlayerCommand()
     {
         Player1AddedState expected = new Player1AddedState(new Player("peter"));
-        assertTrue( target.process(() -> new AddPlayerCommand("peter")).equals(expected));
+        assertTrue( target.process(mock(Game.class), () -> new AddPlayerCommand("peter")).equals(expected));
     }
 
     @Test
     public void shouldGoToExitStateWhenReceivingExitCommand()
     {
         ExitState expected = new ExitState();
-        assertTrue( target.process(() -> new ExitCommand()).equals(expected));
+        assertTrue( target.process(mock(Game.class), () -> new ExitCommand()).equals(expected));
     }
 
     @Test
     public void shouldGoToErrorStateForAnInvalidCommand()
     {
-        GameState returnState = target.process(() -> VoidCommand.value);
+        GameState returnState = target.process(mock(Game.class), () -> VoidCommand.value);
         assertTrue( returnState instanceof ErrorState );
         assertTrue( ((ErrorState)returnState).getRollbackState() == target );
     }

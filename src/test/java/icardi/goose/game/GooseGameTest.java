@@ -5,12 +5,13 @@ import static org.mockito.Mockito.*;
 import org.junit.Test;
 import org.mockito.InOrder;
 
+import icardi.goose.game.boards.Board;
 import icardi.goose.game.inputs.GameInput;
 import icardi.goose.game.outputs.GameOutput;
 import icardi.goose.game.states.ExitState;
 import icardi.goose.game.states.GameState;
 
-public class GameTest 
+public class GooseGameTest 
 {
     @Test
     public void shouldProcessStatesAndExit()
@@ -19,12 +20,12 @@ public class GameTest
         GameInput input = mock(GameInput.class);
         GameOutput output = mock(GameOutput.class);
 
-        Game target = new Game(input, output);
+        GooseGame target = new GooseGame(input, output, mock(Board.class));
 
         GameState firstState = mock(GameState.class);
         GameState secondState = mock(GameState.class);
-        when(firstState.process(any())).thenReturn(secondState);
-        when(secondState.process(any())).thenReturn(new ExitState());
+        when(firstState.process(any(), any())).thenReturn(secondState);
+        when(secondState.process(any(), any())).thenReturn(new ExitState());
         
         when(firstState.render()).thenReturn("some string");
         when(secondState.render()).thenReturn("another string");
@@ -38,11 +39,11 @@ public class GameTest
         // It should process the first state
         orderVerifier.verify(firstState).render();
         orderVerifier.verify(output).display("some string");
-        orderVerifier.verify(firstState).process(any());
+        orderVerifier.verify(firstState).process(any(), any());
         // It should process the second state
         orderVerifier.verify(secondState).render();
         orderVerifier.verify(output).display("another string");
-        orderVerifier.verify(secondState).process(any());
+        orderVerifier.verify(secondState).process(any(), any());
         // It should exit
         orderVerifier.verify(output).display("Thank you for playing!");
     }

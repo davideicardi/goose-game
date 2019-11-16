@@ -1,5 +1,6 @@
 package icardi.goose.game.states;
 
+import icardi.goose.game.Game;
 import icardi.goose.game.inputs.GameInput;
 
 public class ExitState implements GameState {
@@ -10,7 +11,7 @@ public class ExitState implements GameState {
     }
 
     @Override
-    public GameState process(GameInput input) {
+    public GameState process(Game game, GameInput input) {
         return this;
     }
 
