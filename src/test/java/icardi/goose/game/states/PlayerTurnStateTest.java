@@ -116,11 +116,36 @@ public class PlayerTurnStateTest
     {
         GameState returnState = target.process(() -> VoidCommand.value);
         assertTrue( returnState instanceof ErrorState );
+        assertTrue( ((ErrorState)returnState).getRollbackState().equals(target) );
+    }
 
-        PlayerTurnState expectedRollbackState = new PlayerTurnState(
-            new Player("Clark"),
-            new Player("Peter"),
-            true);
-        assertTrue( ((ErrorState)returnState).getRollbackState().equals(expectedRollbackState) );
+    @Test
+    public void shouldGoToErrorStateIfMoveCommandIsNotForTheActivePlayer()
+    {
+        PlayerTurnState currentTarget = new PlayerTurnState(
+            new Player("Clark", 5),
+            new Player("Peter", 6),
+            true
+            );
+
+        GameState returnState = currentTarget.process(() -> new MoveCommand("Peter", 1, 2));
+        assertTrue( returnState instanceof ErrorState );
+        assertTrue( ((ErrorState)returnState).getError().equals("It's not your turn") );
+        assertTrue( ((ErrorState)returnState).getRollbackState().equals(currentTarget) );
+    }
+
+    @Test
+    public void shouldGoToErrorStateIfDiceValuesAreNotValid()
+    {
+        PlayerTurnState currentTarget = new PlayerTurnState(
+            new Player("Clark", 5),
+            new Player("Peter", 6),
+            true
+            );
+
+        GameState returnState = currentTarget.process(() -> new MoveCommand("Clark", 8, 2));
+        assertTrue( returnState instanceof ErrorState );
+        assertTrue( ((ErrorState)returnState).getError().equals("Invalid dice value, must be between 1 and 6") );
+        assertTrue( ((ErrorState)returnState).getRollbackState().equals(currentTarget) );
     }
 }
