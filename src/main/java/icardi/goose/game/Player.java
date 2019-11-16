@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Player
 {
     private String name;
-    private int position = 0;
+    private int position = 1;
 
     public Player(String name) {
         super();
@@ -28,8 +28,8 @@ public class Player
 		return this.position;
     }
 
-    public Player move(int newPosition) {
-        return new Player(name, newPosition);
+    public Player move(int delta) {
+        return new Player(name, position + delta);
     }
 
     @Override

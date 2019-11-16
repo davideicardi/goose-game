@@ -5,6 +5,7 @@ import java.util.Objects;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.GameCommand;
+import icardi.goose.game.inputs.GameInput;
 
 public class Player1AddedState implements GameState {
 
@@ -25,8 +26,9 @@ public class Player1AddedState implements GameState {
     }
 
     @Override
-    public GameState processCommand(GameCommand command)
-    {
+    public GameState process(GameInput input) {
+        GameCommand command = input.waitForCommand();
+        
         if (command instanceof AddPlayerCommand) {
             AddPlayerCommand apc = (AddPlayerCommand)command;
             Player player2 = new Player(apc.getName());
@@ -39,7 +41,7 @@ public class Player1AddedState implements GameState {
             return new Player2AddedState(this.player1, player2);
         }
 
-        return new ErrorState(ErrorState.INVALID_OPERATION, this);
+        return GameState.processCmd(command, this);
     }
 
     @Override

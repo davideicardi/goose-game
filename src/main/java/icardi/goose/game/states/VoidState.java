@@ -1,6 +1,6 @@
 package icardi.goose.game.states;
 
-import icardi.goose.game.commands.GameCommand;
+import icardi.goose.game.inputs.GameInput;
 
 public class VoidState implements GameState {
 
@@ -11,8 +11,7 @@ public class VoidState implements GameState {
     }
 
     @Override
-    public GameState processCommand(GameCommand command)
-    {
+    public GameState process(GameInput input) {
         return this;
     }
 

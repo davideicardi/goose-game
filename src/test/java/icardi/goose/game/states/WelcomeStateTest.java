@@ -1,11 +1,12 @@
 package icardi.goose.game.states;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import icardi.goose.game.commands.StartCommand;
 import icardi.goose.game.commands.VoidCommand;
+import icardi.goose.game.inputs.GameInput;
 
 public class WelcomeStateTest 
 {
@@ -18,16 +19,16 @@ public class WelcomeStateTest
     }
 
     @Test
-    public void shouldGoToNoPlayerStateWhenReceivingStart()
+    public void shouldGoToNoPlayerState()
     {
-        assertTrue( target.processCommand(new StartCommand()) instanceof NoPlayerState );
+        assertTrue( target.process(() -> VoidCommand.value) instanceof NoPlayerState );
     }
 
     @Test
-    public void shouldGoToErrorStateForAnInvalidCommand()
+    public void shouldNotAskForNewCommands()
     {
-        GameState returnState = target.processCommand(VoidCommand.value);
-        assertTrue( returnState instanceof ErrorState );
-        assertTrue( ((ErrorState)returnState).getRollbackState() == target );
+        GameInput mockInput = mock(GameInput.class);
+        target.process(mockInput);
+        verify(mockInput, never()).waitForCommand();
     }
 }

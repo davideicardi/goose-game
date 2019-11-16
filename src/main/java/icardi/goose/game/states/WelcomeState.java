@@ -1,7 +1,6 @@
 package icardi.goose.game.states;
 
-import icardi.goose.game.commands.GameCommand;
-import icardi.goose.game.commands.StartCommand;
+import icardi.goose.game.inputs.GameInput;
 
 public class WelcomeState implements GameState {
 
@@ -9,15 +8,12 @@ public class WelcomeState implements GameState {
     public String render() {
         return 
         "🦆  Welcome to goose-game 🦆\n" +
-         " type `start` and press ENTER to start a game, `exit` to close game in any moment.";
+         " type `exit` to close game in any moment.";
     }
 
     @Override
-    public GameState processCommand(GameCommand command) {
-        if (command instanceof StartCommand) {
-            return new NoPlayerState();
-        }
-        return new ErrorState(ErrorState.INVALID_OPERATION, this);
+    public GameState process(GameInput input) {
+        return new NoPlayerState();
     }
 
     @Override

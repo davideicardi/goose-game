@@ -1,8 +1,17 @@
-package icardi.goose.game.commands;
+package icardi.goose.game.states;
 
-public class StartCommand implements GameCommand {
-    public static CommandParser parser() {
-        return CommandParser.staticParser("start", () -> new StartCommand());
+import icardi.goose.game.inputs.GameInput;
+
+public class ExitState implements GameState {
+
+    @Override
+    public String render() {
+        return "Thank you for playing!";
+    }
+
+    @Override
+    public GameState process(GameInput input) {
+        return this;
     }
 
     @Override

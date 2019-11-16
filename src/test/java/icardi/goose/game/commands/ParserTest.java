@@ -44,11 +44,4 @@ public class ParserTest
         assertTrue( target.parse("EXIT") instanceof ExitCommand );
     }
 
-    @Test
-    public void ParseStartCommand()
-    {
-        assertTrue( target.parse("start") instanceof StartCommand );
-        assertTrue( target.parse("START") instanceof StartCommand );
-    }
-
 }

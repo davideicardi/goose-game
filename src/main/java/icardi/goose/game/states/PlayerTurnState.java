@@ -3,8 +3,10 @@ package icardi.goose.game.states;
 import java.util.Objects;
 
 import icardi.goose.game.Player;
+import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.MoveCommand;
+import icardi.goose.game.inputs.GameInput;
 
 public class PlayerTurnState implements GameState {
 
@@ -20,22 +22,11 @@ public class PlayerTurnState implements GameState {
     }
 
     @Override
-    public String render()
-    {
-        final String IS_YOUR_TURN = "is your turn 🎲";
-
+    public String render() {
         String playersStatus = String.format(
-            "%s%s (%s) %s\n%s%s (%s) %s`",
-            
-            " ".repeat(player1.getPosition()),
-            player1.getName(),
-            player1.getPosition(),
-            isPlayer1Turn ? IS_YOUR_TURN : "",
-
-            " ".repeat(player2.getPosition()),
-            player2.getName(),
-            player2.getPosition(),
-            !isPlayer1Turn ? IS_YOUR_TURN : ""
+            "%s\n%s`",
+            renderPlayer(player1, isPlayer1Turn),
+            renderPlayer(player2, !isPlayer1Turn)
             );
 
         String helpString = "move by typing `move {playerName}";
@@ -43,8 +34,9 @@ public class PlayerTurnState implements GameState {
     }
 
     @Override
-    public GameState processCommand(GameCommand command)
-    {
+    public GameState process(GameInput input) {
+        GameCommand command = input.waitForCommand();
+        
         final String INVALID_DICE_VALUE = "Invalid dice value, must be between 1 and 6";
         final String IT_IS_NOT_YOUR_TURN = "It's not your turn";
 
@@ -61,7 +53,7 @@ public class PlayerTurnState implements GameState {
             return new PlayerMovedState(player1, player2, apc);
         }
 
-        return new ErrorState(ErrorState.INVALID_OPERATION, this);
+        return GameState.processCmd(command, this);
     }
 
     @Override
@@ -87,6 +79,18 @@ public class PlayerTurnState implements GameState {
 
     private String getActivePlayer() {
         return isPlayer1Turn ? player1.getName() : player2.getName();
+    }
+
+    private String renderPlayer(Player player, boolean isYourTurn) {
+        final String IS_YOUR_TURN = "is your turn 🎲";
+
+        return String.format(
+            "%s%s (%s) %s",
+            " ".repeat(player.getPosition()),
+            player.getName(),
+            player.getPosition(),
+            isYourTurn ? IS_YOUR_TURN : ""
+            );
     }
 
 }

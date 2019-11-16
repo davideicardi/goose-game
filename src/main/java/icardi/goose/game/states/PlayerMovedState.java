@@ -3,14 +3,13 @@ package icardi.goose.game.states;
 import java.util.Objects;
 
 import icardi.goose.game.Player;
-import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.MoveCommand;
+import icardi.goose.game.inputs.GameInput;
 
 public class PlayerMovedState implements GameState {
 
     private final Player player1;
     private final Player player2;
-    private final GameState nextState;
     private final MoveCommand moveCommand;
 
     public PlayerMovedState(Player player1, Player player2, MoveCommand moveCommand) {
@@ -18,8 +17,6 @@ public class PlayerMovedState implements GameState {
         this.player1 = player1;
         this.player2 = player2;
         this.moveCommand = moveCommand;
-
-        this.nextState = calcNextState();
     }
 
     @Override
@@ -28,21 +25,19 @@ public class PlayerMovedState implements GameState {
         Player activePlayer = getMovedPlayer();
 
         return String.format(
-            "%s rolls %s, %s. %s moves from %s to %s\n%s",
+            "%s rolls %s, %s. %s moves from %s to %s",
             activePlayer.getName(),
             moveCommand.getDice1(),
             moveCommand.getDice2(),
             activePlayer.getName(),
             activePlayer.getPosition(),
-            calcPosition(),
-            nextState.render()
+            calcPosition()
             );
     }
 
     @Override
-    public GameState processCommand(GameCommand command)
-    {
-        return nextState.processCommand(command);
+    public GameState process(GameInput input) {
+        return calcNextState();
     }
 
     @Override
@@ -83,10 +78,12 @@ public class PlayerMovedState implements GameState {
     }
 
     private GameState calcNextState() {
+        int delta = moveCommand.total();
+
         if (isPlayer1Moved()) {
-            return new PlayerTurnState(player1.move(calcPosition()), player2, !isPlayer1Moved());
+            return new PlayerTurnState(player1.move(delta), player2, !isPlayer1Moved());
         } else {
-            return new PlayerTurnState(player1, player2.move(calcPosition()), !isPlayer1Moved());
+            return new PlayerTurnState(player1, player2.move(delta), !isPlayer1Moved());
         }
     }
 }

@@ -4,7 +4,6 @@ import java.util.Optional;
 
 public class Parser {
     private CommandParser[] _parsers = {
-        StartCommand.parser(),
         ExitCommand.parser(),
         AddPlayerCommand.parser(),
         MoveCommand.parser()

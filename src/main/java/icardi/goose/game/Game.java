@@ -1,9 +1,8 @@
 package icardi.goose.game;
 
-import icardi.goose.game.commands.ExitCommand;
-import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.inputs.GameInput;
 import icardi.goose.game.outputs.GameOutput;
+import icardi.goose.game.states.ExitState;
 import icardi.goose.game.states.GameState;
 import icardi.goose.game.states.VoidState;
 
@@ -25,18 +24,13 @@ public class Game {
         while (true) {
             _output.display(_state.render());
 
-            GameCommand cmd = _input.waitForCommand();
-
-            if (cmd instanceof ExitCommand) {
-                _output.display("Thank you");
+            if (_state instanceof ExitState) {
                 break;
             }
 
-            GameState nextState = _state.processCommand(cmd);
+            GameState nextState = _state.process(_input);
 
-            if (nextState != _state) {
-                transition(nextState);
-            }
+            transition(nextState);
         }
     }
 

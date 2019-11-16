@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.AddPlayerCommand;
+import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.VoidCommand;
 
 public class NoPlayerStateTest 
@@ -22,13 +23,20 @@ public class NoPlayerStateTest
     public void shouldGoToNoPlayerStateWhenReceivingAddPlayerCommand()
     {
         Player1AddedState expected = new Player1AddedState(new Player("peter"));
-        assertTrue( target.processCommand(new AddPlayerCommand("peter")).equals(expected));
+        assertTrue( target.process(() -> new AddPlayerCommand("peter")).equals(expected));
+    }
+
+    @Test
+    public void shouldGoToExitStateWhenReceivingExitCommand()
+    {
+        ExitState expected = new ExitState();
+        assertTrue( target.process(() -> new ExitCommand()).equals(expected));
     }
 
     @Test
     public void shouldGoToErrorStateForAnInvalidCommand()
     {
-        GameState returnState = target.processCommand(VoidCommand.value);
+        GameState returnState = target.process(() -> VoidCommand.value);
         assertTrue( returnState instanceof ErrorState );
         assertTrue( ((ErrorState)returnState).getRollbackState() == target );
     }

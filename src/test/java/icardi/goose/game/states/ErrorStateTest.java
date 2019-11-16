@@ -27,9 +27,8 @@ public class ErrorStateTest
         when(rollbackState.render()).thenReturn("Some state");
         ErrorState target = new ErrorState("My error", rollbackState);
 
-        VoidCommand cmd = VoidCommand.value;
-        target.processCommand(cmd);
+        target.process(() -> VoidCommand.value);
 
-        verify(rollbackState).processCommand(cmd);
+        verify(rollbackState).process(any());
     }
 }
