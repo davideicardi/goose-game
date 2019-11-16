@@ -4,13 +4,14 @@ import java.util.Objects;
 
 public class Player
 {
-    private String name;
-    private int position = 1;
+    private final String name;
+    private final int position;
 
     public Player(String name) {
         super();
 
         this.name = name;
+        this.position = 1;
     }
 
     public Player(String name, int position) {

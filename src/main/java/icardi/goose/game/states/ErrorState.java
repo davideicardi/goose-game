@@ -8,8 +8,8 @@ public class ErrorState implements GameState {
 
     public static final String INVALID_OPERATION = "Invalid operation";
 
-    private String error;
-    private GameState rollbackState;
+    private final String error;
+    private final GameState rollbackState;
 
     public ErrorState(String error, GameState rollbackState) {
         super();

@@ -3,7 +3,7 @@ package icardi.goose.game.commands;
 import java.util.Objects;
 
 public class AddPlayerCommand implements GameCommand {
-    private String name;
+    private final String name;
 
     public AddPlayerCommand(String name) {
         super();

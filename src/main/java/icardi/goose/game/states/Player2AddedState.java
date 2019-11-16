@@ -7,8 +7,8 @@ import icardi.goose.game.inputs.GameInput;
 
 public class Player2AddedState implements GameState {
 
-    private Player player1;
-    private Player player2;
+    private final Player player1;
+    private final Player player2;
 
     public Player2AddedState(Player player1, Player player2) {
         super();

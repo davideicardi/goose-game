@@ -3,9 +3,9 @@ package icardi.goose.game.commands;
 import java.util.Objects;
 
 public class MoveCommand implements GameCommand {
-    private String name;
-    private int dice1;
-    private int dice2;
+    private final String name;
+    private final int dice1;
+    private final int dice2;
 
     public MoveCommand(String name, int dice1, int dice2) {
         super();

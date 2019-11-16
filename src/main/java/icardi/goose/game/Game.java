@@ -8,8 +8,8 @@ import icardi.goose.game.states.VoidState;
 
 public class Game {
     private GameState _state = new VoidState();
-    private GameInput _input;
-    private GameOutput _output;
+    private final GameInput _input;
+    private final GameOutput _output;
 
     public Game(GameInput input, GameOutput output) {
         super();
