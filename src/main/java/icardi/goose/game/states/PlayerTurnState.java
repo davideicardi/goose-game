@@ -4,33 +4,38 @@ import java.util.Objects;
 
 import icardi.goose.game.Game;
 import icardi.goose.game.Player;
+import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.MoveCommand;
 import icardi.goose.game.inputs.GameInput;
 
 public class PlayerTurnState implements GameState {
 
-    private Player player1;
-    private Player player2;
-    private boolean isPlayer1Turn;
+    private final Board board;
 
-    public PlayerTurnState(Player player1, Player player2, boolean isPlayer1Turn) {
+    public PlayerTurnState(Board board) {
         super();
-        this.player1 = player1;
-        this.player2 = player2;
-        this.isPlayer1Turn = isPlayer1Turn;
+        this.board = board;
     }
 
     @Override
     public String render() {
-        String playersStatus = String.format(
-            "%s\n%s`",
-            renderPlayer(player1, isPlayer1Turn),
-            renderPlayer(player2, !isPlayer1Turn)
-            );
+        StringBuilder stringBuilder = new StringBuilder();
 
-        String helpString = "move by typing `move {playerName}";
-        return String.format("---------------\n%s\n---------------\n %s", playersStatus, helpString);
+        stringBuilder.append("---------------\n");
+
+        board.getPlayers().forEach(player -> {
+            boolean isYourTurn = Board.isPlayerTurn(board, player);
+            int playerPosition = board.getPosition(player);
+
+            stringBuilder.append(renderPlayer(player, playerPosition, isYourTurn));
+            stringBuilder.append("\n");
+        });
+
+        stringBuilder.append("---------------\n");
+        stringBuilder.append(" move by typing `move {playerName}`");
+
+        return stringBuilder.toString();
     }
 
     @Override
@@ -43,14 +48,16 @@ public class PlayerTurnState implements GameState {
         if (command instanceof MoveCommand) {
             MoveCommand apc = (MoveCommand)command;
 
-            if (!apc.getName().equalsIgnoreCase(getActivePlayer())) {
+            Player movedPlayer = new Player(apc.getName());
+            if (!Board.isPlayerTurn(board, movedPlayer)) {
                 return new ErrorState(IT_IS_NOT_YOUR_TURN, this); 
             }
+
             if (apc.getDice1() < 1 || apc.getDice1() > 6 || apc.getDice2() < 1 || apc.getDice2() > 6) {
                 return new ErrorState(INVALID_DICE_VALUE, this); 
             }
 
-            return new PlayerMovedState(player1, player2, apc);
+            return new PlayerMovedState(board, apc);
         }
 
         return GameState.processCmd(command, this);
@@ -72,23 +79,17 @@ public class PlayerTurnState implements GameState {
         }
         PlayerTurnState other = (PlayerTurnState)o;
         // field comparison
-        return Objects.equals(player1, other.player1)
-        && Objects.equals(player2, other.player2)
-        && isPlayer1Turn == other.isPlayer1Turn;
+        return Objects.equals(board, other.board);
     }
 
-    private String getActivePlayer() {
-        return isPlayer1Turn ? player1.getName() : player2.getName();
-    }
-
-    private String renderPlayer(Player player, boolean isYourTurn) {
+    private String renderPlayer(Player player, int position, boolean isYourTurn) {
         final String IS_YOUR_TURN = "is your turn 🎲";
 
         return String.format(
             "%s%s (%s) %s",
-            " ".repeat(player.getPosition()),
+            " ".repeat(position),
             player.getName(),
-            player.getPosition(),
+            position,
             isYourTurn ? IS_YOUR_TURN : ""
             );
     }

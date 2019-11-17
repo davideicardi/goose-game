@@ -1,9 +1,17 @@
 package icardi.goose.game.states;
 
 import icardi.goose.game.Game;
+import icardi.goose.game.boards.Board;
 import icardi.goose.game.inputs.GameInput;
 
 public class WelcomeState implements GameState {
+
+    private final Board board;
+
+    public WelcomeState(Board board) {
+        super();
+        this.board = board;
+    }
 
     @Override
     public String render() {
@@ -14,7 +22,7 @@ public class WelcomeState implements GameState {
 
     @Override
     public GameState process(Game game, GameInput input) {
-        return new NoPlayerState();
+        return new WaitingForPlayersState(board);
     }
 
     @Override

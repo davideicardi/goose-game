@@ -6,12 +6,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import icardi.goose.game.Game;
+import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.VoidCommand;
 import icardi.goose.game.inputs.GameInput;
 
 public class WelcomeStateTest 
 {
-    WelcomeState target = new WelcomeState();
+    WelcomeState target = new WelcomeState(mock(Board.class));
 
     @Test
     public void shouldRender()
@@ -20,9 +21,9 @@ public class WelcomeStateTest
     }
 
     @Test
-    public void shouldGoToNoPlayerState()
+    public void shouldGoToWaitingForPlayersState()
     {
-        assertTrue( target.process(mock(Game.class), () -> VoidCommand.value) instanceof NoPlayerState );
+        assertTrue( target.process(mock(Game.class), () -> VoidCommand.value) instanceof WaitingForPlayersState );
     }
 
     @Test

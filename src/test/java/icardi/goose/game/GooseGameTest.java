@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import icardi.goose.game.boards.Board;
 import icardi.goose.game.inputs.GameInput;
 import icardi.goose.game.outputs.GameOutput;
 import icardi.goose.game.states.ExitState;
@@ -20,7 +19,7 @@ public class GooseGameTest
         GameInput input = mock(GameInput.class);
         GameOutput output = mock(GameOutput.class);
 
-        GooseGame target = new GooseGame(input, output, mock(Board.class));
+        GooseGame target = new GooseGame(input, output);
 
         GameState firstState = mock(GameState.class);
         GameState secondState = mock(GameState.class);

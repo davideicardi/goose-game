@@ -2,25 +2,42 @@ package icardi.goose.game.states;
 
 import icardi.goose.game.Game;
 import icardi.goose.game.Player;
+import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.inputs.GameInput;
 
-public class NoPlayerState implements GameState {
+public class WaitingForPlayersState implements GameState {
+
+    private final Board board;
+
+    public WaitingForPlayersState(Board board) {
+        super();
+        this.board = board;
+    }
 
     @Override
     public String render()
     {
-        return " Insert the first player by typing: `add player {yourName}`";
+        return String.format(
+            "👨  Number of players: %s\nInsert a player by typing: `add player {yourName}`",
+            this.board.getPlayers().size()
+        );
     }
 
     @Override
     public GameState process(Game game, GameInput input) {
+        // Here I can easily support more players
+        if (board.getPlayers().size() == 2) {
+            return new PlayerTurnState(board);
+        }
+
         GameCommand command = input.waitForCommand();
 
         if (command instanceof AddPlayerCommand) {
             AddPlayerCommand apc = (AddPlayerCommand)command;
-            return new Player1AddedState(new Player(apc.getName()));
+            Board newBoard = board.addPlayer(new Player(apc.getName()));
+            return new WaitingForPlayersState(newBoard);
         }
 
         return GameState.processCmd(command, this);

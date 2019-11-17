@@ -4,19 +4,18 @@ import java.util.Objects;
 
 import icardi.goose.game.Game;
 import icardi.goose.game.Player;
+import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.MoveCommand;
 import icardi.goose.game.inputs.GameInput;
 
 public class PlayerMovedState implements GameState {
 
-    private final Player player1;
-    private final Player player2;
+    private final Board board;
     private final MoveCommand moveCommand;
 
-    public PlayerMovedState(Player player1, Player player2, MoveCommand moveCommand) {
+    public PlayerMovedState(Board board, MoveCommand moveCommand) {
         super();
-        this.player1 = player1;
-        this.player2 = player2;
+        this.board = board;
         this.moveCommand = moveCommand;
     }
 
@@ -31,7 +30,7 @@ public class PlayerMovedState implements GameState {
             moveCommand.getDice1(),
             moveCommand.getDice2(),
             activePlayer.getName(),
-            activePlayer.getPosition(),
+            board.getPosition(activePlayer),
             calcPosition()
             );
     }
@@ -57,34 +56,27 @@ public class PlayerMovedState implements GameState {
         }
         PlayerMovedState other = (PlayerMovedState)o;
         // field comparison
-        return Objects.equals(player1, other.player1)
-        && Objects.equals(player2, other.player2)
+        return Objects.equals(board, other.board)
         && Objects.equals(moveCommand, other.moveCommand);
     }
 
     private Player getMovedPlayer() {
-        if (isPlayer1Moved()) {
-            return player1;
-        }
-        return player2;
+        return new Player(moveCommand.getName());
     }
 
     private int calcPosition() {
-        int newPosition = getMovedPlayer().getPosition() + moveCommand.getDice1() + moveCommand.getDice2();
+        int oldPosition = board.getPosition(getMovedPlayer());
+        int newPosition = oldPosition + moveCommand.total();
         return newPosition;
     }
 
-    private boolean isPlayer1Moved() {
-        return player1.getName().equalsIgnoreCase(moveCommand.getName());
-    }
-
     private GameState calcNextState() {
-        int delta = moveCommand.total();
+        Player movedPlayer = getMovedPlayer();
 
-        if (isPlayer1Moved()) {
-            return new PlayerTurnState(player1.move(delta), player2, !isPlayer1Moved());
-        } else {
-            return new PlayerTurnState(player1, player2.move(delta), !isPlayer1Moved());
-        }
+        Board newBoard = board
+        .movePlayer(movedPlayer, calcPosition())
+        .changeTurn(Board.nextPlayer(board));
+
+        return new PlayerTurnState(newBoard);
     }
 }

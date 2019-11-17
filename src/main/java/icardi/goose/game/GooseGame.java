@@ -1,6 +1,5 @@
 package icardi.goose.game;
 
-import icardi.goose.game.boards.Board;
 import icardi.goose.game.inputs.GameInput;
 import icardi.goose.game.outputs.GameOutput;
 import icardi.goose.game.states.ExitState;
@@ -9,14 +8,12 @@ import icardi.goose.game.states.GameState;
 public class GooseGame implements Game {
     private final GameInput input;
     private final GameOutput output;
-    private final Board board;
 
-    public GooseGame(GameInput input, GameOutput output, Board board) {
+    public GooseGame(GameInput input, GameOutput output) {
         super();
 
         this.input = input;
         this.output = output;
-        this.board = board;
     }
 
     public void start(GameState state) {
@@ -29,10 +26,5 @@ public class GooseGame implements Game {
 
             state = state.process(this, input);
         }
-    }
-
-    @Override
-    public Board board() {
-        return board;
     }
 }

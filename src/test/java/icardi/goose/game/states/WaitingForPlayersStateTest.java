@@ -11,9 +11,9 @@ import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.VoidCommand;
 
-public class NoPlayerStateTest 
+public class WaitingForPlayersStateTest extends StateTestBase
 {
-    NoPlayerState target = new NoPlayerState();
+    WaitingForPlayersState target = new WaitingForPlayersState(emptyBoard());
 
     @Test
     public void shouldRender()
@@ -22,10 +22,29 @@ public class NoPlayerStateTest
     }
 
     @Test
-    public void shouldGoToNoPlayerStateWhenReceivingAddPlayerCommand()
+    public void shouldGoToWaitingForPlayersStateWhenReceivingAddPlayerCommand()
     {
-        Player1AddedState expected = new Player1AddedState(new Player("peter"));
-        assertTrue( target.process(mock(Game.class), () -> new AddPlayerCommand("peter")).equals(expected));
+        WaitingForPlayersState expected = new WaitingForPlayersState(
+            boardWithPlayers(new Player("peter"))
+        );
+
+        GameState nextState = target.process(gameMock(), () -> new AddPlayerCommand("peter"));
+
+        assertTrue(nextState.equals(expected));
+    }
+
+    @Test
+    public void shouldGoToPlayerTurnStateWhenReceiving2AddPlayerCommand()
+    {
+        WaitingForPlayersState expected = new WaitingForPlayersState(
+            boardWithPlayers(new Player("peter"), new Player("clark"))
+        );
+
+        GameState nextState = target
+        .process(gameMock(), () -> new AddPlayerCommand("peter"))
+        .process(gameMock(), () -> new AddPlayerCommand("clark"));
+
+        assertTrue(nextState.equals(expected));
     }
 
     @Test
