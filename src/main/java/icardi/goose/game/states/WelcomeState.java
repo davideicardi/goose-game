@@ -2,7 +2,6 @@ package icardi.goose.game.states;
 
 import icardi.goose.game.Game;
 import icardi.goose.game.boards.Board;
-import icardi.goose.game.inputs.GameInput;
 
 public class WelcomeState implements GameState {
 
@@ -21,7 +20,7 @@ public class WelcomeState implements GameState {
     }
 
     @Override
-    public GameState process(Game game, GameInput input) {
+    public GameState process(Game game) {
         return new WaitingForPlayersState(board);
     }
 

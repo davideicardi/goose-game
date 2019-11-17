@@ -23,8 +23,8 @@ public class GooseGameTest
 
         GameState firstState = mock(GameState.class);
         GameState secondState = mock(GameState.class);
-        when(firstState.process(any(), any())).thenReturn(secondState);
-        when(secondState.process(any(), any())).thenReturn(new ExitState());
+        when(firstState.process(any())).thenReturn(secondState);
+        when(secondState.process(any())).thenReturn(new ExitState());
         
         when(firstState.render()).thenReturn("some string");
         when(secondState.render()).thenReturn("another string");
@@ -38,11 +38,11 @@ public class GooseGameTest
         // It should process the first state
         orderVerifier.verify(firstState).render();
         orderVerifier.verify(output).display("some string");
-        orderVerifier.verify(firstState).process(any(), any());
+        orderVerifier.verify(firstState).process(any());
         // It should process the second state
         orderVerifier.verify(secondState).render();
         orderVerifier.verify(output).display("another string");
-        orderVerifier.verify(secondState).process(any(), any());
+        orderVerifier.verify(secondState).process(any());
         // It should exit
         orderVerifier.verify(output).display("Thank you for playing!");
     }

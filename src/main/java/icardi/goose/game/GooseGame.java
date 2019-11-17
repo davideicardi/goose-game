@@ -24,7 +24,17 @@ public class GooseGame implements Game {
                 break;
             }
 
-            state = state.process(this, input);
+            state = state.process(this);
         }
+    }
+
+    @Override
+    public GameInput input() {
+        return this.input;
+    }
+
+    @Override
+    public GameOutput output() {
+        return this.output;
     }
 }

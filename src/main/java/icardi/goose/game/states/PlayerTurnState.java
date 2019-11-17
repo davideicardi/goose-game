@@ -7,7 +7,6 @@ import icardi.goose.game.Player;
 import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.MoveCommand;
-import icardi.goose.game.inputs.GameInput;
 
 public class PlayerTurnState implements GameState {
 
@@ -39,8 +38,8 @@ public class PlayerTurnState implements GameState {
     }
 
     @Override
-    public GameState process(Game game, GameInput input) {
-        GameCommand command = input.waitForCommand();
+    public GameState process(Game game) {
+        GameCommand command = game.input().waitForCommand();
         
         final String INVALID_DICE_VALUE = "Invalid dice value, must be between 1 and 6";
         final String IT_IS_NOT_YOUR_TURN = "It's not your turn";

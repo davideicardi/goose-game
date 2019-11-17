@@ -1,11 +1,9 @@
 package icardi.goose.game.states;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.ExitCommand;
@@ -28,7 +26,8 @@ public class WaitingForPlayersStateTest extends StateTestBase
             boardWithPlayers(new Player("peter"))
         );
 
-        GameState nextState = target.process(gameMock(), () -> new AddPlayerCommand("peter"));
+        setupCommand(new AddPlayerCommand("peter"));
+        GameState nextState = target.process(game());
 
         assertTrue(nextState.equals(expected));
     }
@@ -40,9 +39,11 @@ public class WaitingForPlayersStateTest extends StateTestBase
             boardWithPlayers(new Player("peter"), new Player("clark"))
         );
 
+        setupCommand(new AddPlayerCommand("peter"),new AddPlayerCommand("clark"));
+
         GameState nextState = target
-        .process(gameMock(), () -> new AddPlayerCommand("peter"))
-        .process(gameMock(), () -> new AddPlayerCommand("clark"));
+        .process(game())
+        .process(game());
 
         assertTrue(nextState.equals(expected));
     }
@@ -51,13 +52,15 @@ public class WaitingForPlayersStateTest extends StateTestBase
     public void shouldGoToExitStateWhenReceivingExitCommand()
     {
         ExitState expected = new ExitState();
-        assertTrue( target.process(mock(Game.class), () -> new ExitCommand()).equals(expected));
+        setupCommand(new ExitCommand());
+        assertTrue( target.process(game()).equals(expected));
     }
 
     @Test
     public void shouldGoToErrorStateForAnInvalidCommand()
     {
-        GameState returnState = target.process(mock(Game.class), () -> VoidCommand.value);
+        setupCommand(VoidCommand.value);
+        GameState returnState = target.process(game());
         assertTrue( returnState instanceof ErrorState );
         assertTrue( ((ErrorState)returnState).getRollbackState() == target );
     }

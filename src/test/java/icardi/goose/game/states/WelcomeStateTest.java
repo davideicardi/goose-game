@@ -5,12 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import icardi.goose.game.Game;
 import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.VoidCommand;
-import icardi.goose.game.inputs.GameInput;
 
-public class WelcomeStateTest 
+public class WelcomeStateTest extends StateTestBase
 {
     WelcomeState target = new WelcomeState(mock(Board.class));
 
@@ -23,14 +21,14 @@ public class WelcomeStateTest
     @Test
     public void shouldGoToWaitingForPlayersState()
     {
-        assertTrue( target.process(mock(Game.class), () -> VoidCommand.value) instanceof WaitingForPlayersState );
+        setupCommand(VoidCommand.value);
+        assertTrue( target.process(game()) instanceof WaitingForPlayersState );
     }
 
     @Test
     public void shouldNotAskForNewCommands()
     {
-        GameInput mockInput = mock(GameInput.class);
-        target.process(mock(Game.class), mockInput);
-        verify(mockInput, never()).waitForCommand();
+        target.process(game());
+        verify(input(), never()).waitForCommand();
     }
 }

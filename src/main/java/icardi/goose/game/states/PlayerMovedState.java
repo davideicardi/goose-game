@@ -6,7 +6,6 @@ import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.MoveCommand;
-import icardi.goose.game.inputs.GameInput;
 
 public class PlayerMovedState implements GameState {
 
@@ -36,7 +35,7 @@ public class PlayerMovedState implements GameState {
     }
 
     @Override
-    public GameState process(Game game, GameInput input) {
+    public GameState process(Game game) {
         return calcNextState();
     }
 

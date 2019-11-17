@@ -1,14 +1,11 @@
 package icardi.goose.game.states;
 
-import static org.mockito.Mockito.*;
-
 import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.MoveCommand;
@@ -49,13 +46,15 @@ public class PlayerTurnStateTest extends StateTestBase
     @Test
     public void shouldNotAllowToMoveTheWrongPlayer()
     {
-        GameState returnState = target.process(gameMock(), () -> new MoveCommand("clark", 1, 2));
+        setupCommand(new MoveCommand("clark", 1, 2));
+        GameState returnState = target.process(game());
         assertTrue( returnState instanceof ErrorState );
 
         assertTrue( ((ErrorState)returnState).getError().equals("It's not your turn") );
         assertTrue( ((ErrorState)returnState).getRollbackState().equals(target) );
 
-        GameState returnState2 = target.process(gameMock(), () -> new MoveCommand("not-existing", 1, 2));
+        setupCommand(new MoveCommand("not-existing", 1, 2));
+        GameState returnState2 = target.process(game());
         assertTrue( returnState2 instanceof ErrorState );
     }
 
@@ -64,16 +63,21 @@ public class PlayerTurnStateTest extends StateTestBase
     {
         final String INVALID_DICE_VALUE = "Invalid dice value, must be between 1 and 6";
 
+        setupCommand(new MoveCommand("peter", 0, 2));
         assertTrue(
-            ((ErrorState)target.process(gameMock(), () -> new MoveCommand("peter", 0, 2)))
+            ((ErrorState)target.process(game()))
             .getError().equals(INVALID_DICE_VALUE)
             );
+
+        setupCommand(new MoveCommand("peter", 1, -4));
         assertTrue(
-            ((ErrorState)target.process(gameMock(), () -> new MoveCommand("peter", 1, -4)))
+            ((ErrorState)target.process(game()))
             .getError().equals(INVALID_DICE_VALUE)
             );
+
+        setupCommand(new MoveCommand("peter", 7, 2));
         assertTrue(
-            ((ErrorState)target.process(gameMock(), () -> new MoveCommand("peter", 7, 2)))
+            ((ErrorState)target.process(game()))
             .getError().equals(INVALID_DICE_VALUE)
             );
     }
@@ -85,7 +89,8 @@ public class PlayerTurnStateTest extends StateTestBase
             boardWithPlayers(new Player("peter"), new Player("clark")),
             new MoveCommand("peter", 1, 2));
 
-        GameState state = target.process(gameMock(), () -> new MoveCommand("peter", 1, 2));
+        setupCommand(new MoveCommand("peter", 1, 2));
+        GameState state = target.process(game());
 
         assertTrue(state.equals(expectedStep));
     }
@@ -95,13 +100,15 @@ public class PlayerTurnStateTest extends StateTestBase
     public void shouldGoToExitStateWhenReceivingExitCommand()
     {
         ExitState expected = new ExitState();
-        assertTrue( target.process(mock(Game.class), () -> new ExitCommand()).equals(expected));
+        setupCommand(new ExitCommand());
+        assertTrue( target.process(game()).equals(expected) );
     }
 
     @Test
     public void shouldGoToErrorStateForAnInvalidCommand()
     {
-        GameState returnState = target.process(mock(Game.class), () -> VoidCommand.value);
+        setupCommand(VoidCommand.value);
+        GameState returnState = target.process(game());
         assertTrue( returnState instanceof ErrorState );
         assertTrue( ((ErrorState)returnState).getRollbackState().equals(target) );
     }
