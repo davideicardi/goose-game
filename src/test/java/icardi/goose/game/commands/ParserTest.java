@@ -38,6 +38,13 @@ public class ParserTest
     }
 
     @Test
+    public void ParseRollsAndMoveCommand()
+    {
+        assertTrue( target.parse("move davide").equals(new RollsAndMoveCommand("davide")) );
+    }
+
+
+    @Test
     public void ParseExitCommand()
     {
         assertTrue( target.parse("exit") instanceof ExitCommand );

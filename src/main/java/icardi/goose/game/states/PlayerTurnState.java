@@ -9,6 +9,7 @@ import icardi.goose.game.boards.Board;
 import icardi.goose.game.boards.TurnResult;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.MoveCommand;
+import icardi.goose.game.commands.RollsAndMoveCommand;
 import icardi.goose.game.exceptions.InvalidDiceException;
 import icardi.goose.game.exceptions.NotYourTurnException;
 import icardi.goose.game.moves.Move;
@@ -20,6 +21,10 @@ public class PlayerTurnState implements GameState {
     public PlayerTurnState(Board board) {
         super();
         this.board = board;
+    }
+
+    public Board getBoard() {
+        return this.board;
     }
 
     @Override
@@ -54,13 +59,15 @@ public class PlayerTurnState implements GameState {
 
                 Dice[] dices = new Dice[] { Dice.fromValue(apc.getDice1()), Dice.fromValue(apc.getDice2()) };
                 
-                TurnResult result = board.turn(movedPlayer, dices);
-
-                for (Move move : result.moves) {
-                    game.output().display(move.toString());
-                }
+                return doTurn(game, movedPlayer, dices);
+            } if (command instanceof RollsAndMoveCommand) {
+                RollsAndMoveCommand apc = (RollsAndMoveCommand)command;
     
-                return new PlayerTurnState(result.board);
+                Player movedPlayer = new Player(apc.getName());
+
+                Dice[] dices = new Dice[] { Dice.roll(), Dice.roll() };
+                
+                return doTurn(game, movedPlayer, dices);
             }
     
             return GameState.processDefault(command, this);
@@ -69,6 +76,16 @@ public class PlayerTurnState implements GameState {
         } catch (NotYourTurnException ex) {
             return new ErrorState(ex.getMessage(), this);
         }
+    }
+
+    private GameState doTurn(Game game, Player movedPlayer, Dice[] dices) throws NotYourTurnException {
+        TurnResult result = board.turn(movedPlayer, dices);
+
+        for (Move move : result.moves) {
+            game.output().display(move.toString());
+        }
+   
+        return new PlayerTurnState(result.board);
     }
 
     @Override

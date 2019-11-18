@@ -2,6 +2,7 @@ package icardi.goose.game.states;
 
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import icardi.goose.game.Player;
 import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.MoveCommand;
+import icardi.goose.game.commands.RollsAndMoveCommand;
 import icardi.goose.game.commands.VoidCommand;
 
 public class PlayerTurnStateTest extends StateTestBase
@@ -98,6 +100,17 @@ public class PlayerTurnStateTest extends StateTestBase
         assertTrue(state.equals(expectedStep));
     }
 
+    @Test
+    public void shouldMovePlayerWithRollsAndMoveCommand()
+    {
+        setupCommand(new RollsAndMoveCommand("peter"));
+        GameState state = target.process(game());
+
+        assertTrue(state instanceof PlayerTurnState);
+        PlayerTurnState turnState = (PlayerTurnState)state;
+        assertEquals(clark, turnState.getBoard().playerTurn().get());
+        assertTrue(turnState.getBoard().getPlayerBox(peter).getPosition() > 1);
+    }
 
     @Test
     public void shouldGoToExitStateWhenReceivingExitCommand()

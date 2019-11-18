@@ -22,10 +22,6 @@ public class MoveCommand implements GameCommand {
         return dice2;
     }
 
-    public int total() {
-        return dice1 + dice2;
-    }
-
     public String getName() {
         return name;
     }
