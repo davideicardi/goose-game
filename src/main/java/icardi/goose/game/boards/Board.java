@@ -6,6 +6,7 @@ import java.util.Optional;
 import icardi.goose.game.Dice;
 import icardi.goose.game.Player;
 import icardi.goose.game.boxes.Box;
+import icardi.goose.game.boxes.FinishBox;
 import icardi.goose.game.exceptions.DuplicatedPlayerException;
 import icardi.goose.game.exceptions.NotYourTurnException;
 
@@ -47,4 +48,20 @@ public interface Board {
 
         return Optional.of(board.getPlayers().get(nextPlayer));
     }
+
+    public static Optional<Player> winner(Board board) {
+        if (board.getPlayers().isEmpty()) {
+            return Optional.empty();
+        }
+
+        for (Player player : board.getPlayers()) {
+            Box box = board.getPlayerBox(player);
+            if (box instanceof FinishBox) {
+                return Optional.of(player);
+            }
+        }
+
+        return Optional.empty();
+    }
+
 }

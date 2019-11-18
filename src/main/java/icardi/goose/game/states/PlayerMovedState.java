@@ -1,8 +1,11 @@
 package icardi.goose.game.states;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import icardi.goose.game.Game;
+import icardi.goose.game.Player;
+import icardi.goose.game.boards.Board;
 import icardi.goose.game.boards.TurnResult;
 import icardi.goose.game.moves.Move;
 
@@ -24,6 +27,7 @@ public class PlayerMovedState implements GameState {
         final StringBuilder builder = new StringBuilder();
         for (final Move move : turnResult.moves) {
             builder.append(move.toString());
+            builder.append(" ");
         }
 
         return builder.toString();
@@ -31,7 +35,10 @@ public class PlayerMovedState implements GameState {
 
     @Override
     public GameState process(final Game game) {
-        return new PlayerTurnState(turnResult.board);
+        Optional<Player> winner = Board.winner(turnResult.board);
+        return winner
+        .map(p -> (GameState)new PlayerWinsState(p))
+        .orElse(new PlayerTurnState(turnResult.board));
     }
 
     @Override

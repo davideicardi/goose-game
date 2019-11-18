@@ -17,6 +17,7 @@ import icardi.goose.game.boxes.GooseBox;
 import icardi.goose.game.boxes.StartBox;
 import icardi.goose.game.exceptions.DuplicatedPlayerException;
 import icardi.goose.game.exceptions.NotYourTurnException;
+import icardi.goose.game.moves.BounceMove;
 import icardi.goose.game.moves.Move;
 import icardi.goose.game.moves.RollsMove;
 
@@ -104,16 +105,25 @@ public class GooseBoard implements Board {
             throw new NotYourTurnException(String.format("%s: it's not your turn", player.getName()));
         }
 
+        List<Move> moves = new ArrayList<>();
+
         int delta = Dice.totals(dices);
+
         Box from = getPlayerBox(player);
-        Box to = getBox(from.getPosition() + delta);
+        int expectedToPosition = from.getPosition() + delta;
+        int actualToPosition = Math.min(expectedToPosition, boxes.length);
+        int bouncesMoves = expectedToPosition - actualToPosition;
+        Box to = getBox(actualToPosition);
+
+        moves.add(new RollsMove(player, dices, from, to));
+        if (bouncesMoves > 0) { // bounce
+            to = getBox(actualToPosition - bouncesMoves);
+            moves.add(new BounceMove(player, from, to));
+        }
 
         Board newBoard = 
         movePlayer(player, to.getPosition())
         .changeTurn(Board.nextPlayer(this));
-
-        List<Move> moves = new ArrayList<>();
-        moves.add(new RollsMove(player, dices, from, to));
 
         return new TurnResult(newBoard, moves);
     }
