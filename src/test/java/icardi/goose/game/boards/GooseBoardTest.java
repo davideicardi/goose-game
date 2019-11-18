@@ -3,6 +3,8 @@ package icardi.goose.game.boards;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import icardi.goose.game.Dice;
@@ -42,7 +44,7 @@ public class GooseBoardTest
         new GooseBoard()
         .addPlayer(donald)
         .addPlayer(duck)
-        .turn(duck, new Dice[] { Dice.fromValue(1), Dice.fromValue(1) });
+        .turn(duck, Arrays.asList(Dice.fromValue(1), Dice.fromValue(1)));
     }
 
     @Test()
@@ -52,7 +54,7 @@ public class GooseBoardTest
         TurnResult result = new GooseBoard()
         .addPlayer(donald)
         .addPlayer(duck)
-        .turn(donald, new Dice[] { Dice.fromValue(1), Dice.fromValue(1) });
+        .turn(donald, Arrays.asList(Dice.fromValue(1), Dice.fromValue(1)));
         
         assertEquals(3, result.board.getPlayerBox(donald).getPosition() );
         assertEquals(1, result.board.getPlayerBox(duck).getPosition() );
@@ -68,10 +70,10 @@ public class GooseBoardTest
         TurnResult result = new GooseBoard()
         .addPlayer(donald)
         .addPlayer(duck)
-        .turn(donald, new Dice[] { Dice.fromValue(1), Dice.fromValue(1) }).board
-        .turn(duck, new Dice[] { Dice.fromValue(2), Dice.fromValue(1) }).board
-        .turn(donald, new Dice[] { Dice.fromValue(1), Dice.fromValue(1) }).board
-        .turn(duck, new Dice[] { Dice.fromValue(2), Dice.fromValue(1) });
+        .turn(donald, Dice.fromValues(1,1)).board
+        .turn(duck, Dice.fromValues(2,1)).board
+        .turn(donald, Dice.fromValues(1,1)).board
+        .turn(duck, Dice.fromValues(2,1));
         
         assertEquals(5, result.board.getPlayerBox(donald).getPosition() );
         assertEquals(7, result.board.getPlayerBox(duck).getPosition() );

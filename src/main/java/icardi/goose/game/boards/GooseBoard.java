@@ -99,7 +99,7 @@ public class GooseBoard implements Board {
     }
 
     @Override
-    public TurnResult turn(Player player, Dice[] dices) throws NotYourTurnException {
+    public TurnResult turn(Player player, List<Dice> dices) throws NotYourTurnException {
         if (!Board.isPlayerTurn(this, player)) {
             throw new NotYourTurnException(String.format("%s: it's not your turn", player.getName()));
         }

@@ -1,7 +1,6 @@
 package icardi.goose.game.boards;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import icardi.goose.game.Dice;
@@ -14,7 +13,7 @@ public interface Board {
     Board addPlayer(Player player) throws DuplicatedPlayerException;
     List<Player> getPlayers();
 
-    TurnResult turn(Player player, Dice[] dices) throws NotYourTurnException;
+    TurnResult turn(Player player, List<Dice> dices) throws NotYourTurnException;
 
     Board movePlayer(Player player, int position);
     Box getPlayerBox(Player player);

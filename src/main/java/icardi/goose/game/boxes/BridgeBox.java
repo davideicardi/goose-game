@@ -23,4 +23,24 @@ public class BridgeBox implements Box {
     public String toString() {
         return "The Bridge";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        // self check
+        if (this == o) {
+            return true;
+        }
+        // null check
+        if (o == null) {
+            return false;
+        }
+        // type check and cast
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        BridgeBox other = (BridgeBox)o;
+        // field comparison
+        return position == other.position
+        && bridgeTo == other.bridgeTo;
+    }
 }

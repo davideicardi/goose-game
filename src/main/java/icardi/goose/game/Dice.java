@@ -1,5 +1,8 @@
 package icardi.goose.game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import icardi.goose.game.exceptions.InvalidDiceException;
@@ -55,11 +58,21 @@ public class Dice
         return new Dice(rnd.nextInt(6) + 1);
     }
 
-    public static int totals(Dice[] dices) {
+    public static int totals(List<Dice> dices) {
         int total = 0;
         for (Dice dice : dices) {
             total += dice.value;
         }
         return total;
+    }
+
+    public static List<Dice> fromValues(int ...values) throws InvalidDiceException {
+        List<Dice> result = new ArrayList<Dice>();
+
+        for (int value : values) {
+            result.add(Dice.fromValue(value));
+        }
+
+        return result;
     }
 }

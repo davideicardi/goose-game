@@ -1,6 +1,8 @@
 package icardi.goose.game.states;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import icardi.goose.game.Dice;
@@ -13,7 +15,6 @@ import icardi.goose.game.commands.MoveCommand;
 import icardi.goose.game.commands.RollsAndMoveCommand;
 import icardi.goose.game.exceptions.InvalidDiceException;
 import icardi.goose.game.exceptions.NotYourTurnException;
-import icardi.goose.game.moves.Move;
 
 public class PlayerTurnState implements GameState {
 
@@ -58,7 +59,7 @@ public class PlayerTurnState implements GameState {
     
                 Player movedPlayer = new Player(apc.getName());
 
-                Dice[] dices = new Dice[] { Dice.fromValue(apc.getDice1()), Dice.fromValue(apc.getDice2()) };
+                List<Dice> dices = Arrays.asList(Dice.fromValue(apc.getDice1()), Dice.fromValue(apc.getDice2()));
                 
                 return doTurn(game, movedPlayer, dices);
             } if (command instanceof RollsAndMoveCommand) {
@@ -66,7 +67,7 @@ public class PlayerTurnState implements GameState {
     
                 Player movedPlayer = new Player(apc.getName());
 
-                Dice[] dices = new Dice[] { Dice.roll(), Dice.roll() };
+                List<Dice> dices = Arrays.asList(Dice.roll(), Dice.roll());
                 
                 return doTurn(game, movedPlayer, dices);
             }
@@ -79,14 +80,10 @@ public class PlayerTurnState implements GameState {
         }
     }
 
-    private GameState doTurn(Game game, Player movedPlayer, Dice[] dices) throws NotYourTurnException {
+    private GameState doTurn(Game game, Player movedPlayer, List<Dice> dices) throws NotYourTurnException {
         TurnResult result = board.turn(movedPlayer, dices);
-
-        for (Move move : result.moves) {
-            game.output().display(move.toString());
-        }
    
-        return new PlayerTurnState(result.board);
+        return new PlayerMovedState(result);
     }
 
     @Override

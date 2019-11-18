@@ -1,5 +1,7 @@
 package icardi.goose.game.states;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -7,11 +9,19 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import icardi.goose.game.Dice;
 import icardi.goose.game.Player;
+import icardi.goose.game.boards.Board;
+import icardi.goose.game.boards.TurnResult;
+import icardi.goose.game.boxes.BlankBox;
+import icardi.goose.game.boxes.StartBox;
 import icardi.goose.game.commands.ExitCommand;
 import icardi.goose.game.commands.MoveCommand;
 import icardi.goose.game.commands.RollsAndMoveCommand;
 import icardi.goose.game.commands.VoidCommand;
+import icardi.goose.game.exceptions.InvalidDiceException;
+import icardi.goose.game.moves.Move;
+import icardi.goose.game.moves.RollsMove;
 
 public class PlayerTurnStateTest extends StateTestBase
 {
@@ -86,15 +96,20 @@ public class PlayerTurnStateTest extends StateTestBase
     }
 
     @Test
-    public void shouldMovePlayerWithMoveCommand()
+    public void shouldMovePlayerWithMoveCommand() throws InvalidDiceException
     {
-        PlayerTurnState expectedStep = new PlayerTurnState(
-            boardWithPlayers(peter, clark)
-            .movePlayer(peter, 4)
-            .changeTurn(Optional.of(clark))
-            );
+        Dice dice1 = Dice.fromValue(1);
+        Dice dice2 = Dice.fromValue(2);
+        List<Dice> dices = Arrays.asList(dice1, dice2);
+        Board expectedBoard = boardWithPlayers(peter, clark)
+        .movePlayer(peter, 4)
+        .changeTurn(Optional.of(clark));
+        List<Move> expectedMoves = Arrays.asList(new RollsMove(peter, dices, new StartBox(1), new BlankBox(4)));
+        PlayerMovedState expectedStep = new PlayerMovedState(
+            new TurnResult(expectedBoard, expectedMoves)
+        );
 
-        setupCommand(new MoveCommand("peter", 1, 2));
+        setupCommand(new MoveCommand("peter", dice1.getValue(), dice2.getValue()));
         GameState state = target.process(game());
 
         assertTrue(state.equals(expectedStep));
@@ -106,10 +121,11 @@ public class PlayerTurnStateTest extends StateTestBase
         setupCommand(new RollsAndMoveCommand("peter"));
         GameState state = target.process(game());
 
-        assertTrue(state instanceof PlayerTurnState);
-        PlayerTurnState turnState = (PlayerTurnState)state;
-        assertEquals(clark, turnState.getBoard().playerTurn().get());
-        assertTrue(turnState.getBoard().getPlayerBox(peter).getPosition() > 1);
+        assertTrue(state instanceof PlayerMovedState);
+        PlayerMovedState movedState = (PlayerMovedState)state;
+        Board board = movedState.getTurnResult().board;
+        assertEquals(clark, board.playerTurn().get());
+        assertTrue(board.getPlayerBox(peter).getPosition() > 1);
     }
 
     @Test
