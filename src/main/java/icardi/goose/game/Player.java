@@ -6,18 +6,18 @@ public class Player
 {
     private final String name;
 
-    public Player(String name) {
+    public Player(final String name) {
         super();
 
         this.name = name;
     }
 
-	public String getName() {
-		return this.name;
+    public String getName() {
+        return this.name;
     }
-    
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         // self check
         if (this == o) {
             return true;
@@ -30,7 +30,7 @@ public class Player
         if (getClass() != o.getClass()) {
             return false;
         }
-        Player other = (Player)o;
+        final Player other = (Player) o;
         // field comparison
         return Objects.equals(this.name, other.name);
     }

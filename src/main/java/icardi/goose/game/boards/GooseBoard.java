@@ -7,7 +7,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.HashMap;
 
+import icardi.goose.game.Dice;
 import icardi.goose.game.Player;
+import icardi.goose.game.boxes.BlankBox;
+import icardi.goose.game.boxes.Box;
+import icardi.goose.game.boxes.BridgeBox;
+import icardi.goose.game.boxes.FinishBox;
+import icardi.goose.game.boxes.GooseBox;
+import icardi.goose.game.boxes.StartBox;
+import icardi.goose.game.exceptions.DuplicatedPlayerException;
+import icardi.goose.game.exceptions.NotYourTurnException;
+import icardi.goose.game.moves.Move;
+import icardi.goose.game.moves.RollsMove;
 
 public class GooseBoard implements Board {
 
@@ -23,11 +34,7 @@ public class GooseBoard implements Board {
         activePlayer = 0;
     }
 
-    protected GooseBoard(
-        List<Player> players,
-        Map<Player, Integer> positions,
-        int activePlayer
-        ) {
+    protected GooseBoard(List<Player> players, Map<Player, Integer> positions, int activePlayer) {
         super();
 
         this.players = players;
@@ -36,49 +43,43 @@ public class GooseBoard implements Board {
     }
 
     @Override
-    public Box getBox(int position) {
-        return boxes[position + 1];
-    }
-	@Override
-	public int boxCount() {
-		return boxes.length;
-	}
+    public Board addPlayer(Player player) throws DuplicatedPlayerException {
+        if (players.contains(player)) {
+            throw new DuplicatedPlayerException(String.format("%s: already existing player", player.getName()));
+        }
 
-	@Override
-	public Board addPlayer(Player player) {
         List<Player> newPlayers = new ArrayList<>(players);
         newPlayers.add(player);
 
-		return new GooseBoard(newPlayers, positions, activePlayer);
-	}
+        return new GooseBoard(newPlayers, positions, activePlayer);
+    }
 
-	@Override
-	public List<Player> getPlayers() {
-		return players;
-	}
+    @Override
+    public List<Player> getPlayers() {
+        return players;
+    }
 
-	@Override
-	public Board movePlayer(Player player, int position) {
+    private Box getBox(int position) {
+        return boxes[position - 1];
+    }
+
+    @Override
+    public Board movePlayer(Player player, int position) {
         Map<Player, Integer> newPositions = new HashMap<>(positions);
         newPositions.put(player, position);
 
-		return new GooseBoard(players, newPositions, activePlayer);
-	}
+        return new GooseBoard(players, newPositions, activePlayer);
+    }
 
-	@Override
-	public int getPosition(Player player) {
+    @Override
+    public Box getPlayerBox(Player player) {
         if (positions.containsKey(player)) {
-            return positions.get(player);
+            return getBox(positions.get(player));
         }
 
-		return 1;
+        return getBox(1);
     }
-    
-    @Override
-    public Map<Player, Integer> getPositions() {
-        return new HashMap<>(positions);
-    }
-    
+
     @Override
     public Optional<Player> playerTurn() {
         if (activePlayer >= 0 && activePlayer < players.size()) {
@@ -87,13 +88,34 @@ public class GooseBoard implements Board {
 
         return Optional.empty();
     }
+
     @Override
     public Board changeTurn(Optional<Player> player) {
         int activePlayer = player.map(p -> players.indexOf(p)).orElse(0);
         if (activePlayer < 0) {
             activePlayer = 0;
         }
-        return new GooseBoard(players, positions, activePlayer );
+        return new GooseBoard(players, positions, activePlayer);
+    }
+
+    @Override
+    public TurnResult turn(Player player, Dice[] dices) throws NotYourTurnException {
+        if (!Board.isPlayerTurn(this, player)) {
+            throw new NotYourTurnException(String.format("%s: it's not your turn", player.getName()));
+        }
+
+        int delta = Dice.totals(dices);
+        Box from = getPlayerBox(player);
+        Box to = getBox(from.getPosition() + delta);
+
+        Board newBoard = 
+        movePlayer(player, to.getPosition())
+        .changeTurn(Board.nextPlayer(this));
+
+        List<Move> moves = new ArrayList<>();
+        moves.add(new RollsMove(player, dices, from, to));
+
+        return new TurnResult(newBoard, moves);
     }
 
     @Override
@@ -110,78 +132,23 @@ public class GooseBoard implements Board {
         if (getClass() != o.getClass()) {
             return false;
         }
-        GooseBoard other = (GooseBoard)o;
+        GooseBoard other = (GooseBoard) o;
 
         // field comparison
-        return Objects.equals(players, other.players)
-        && Objects.equals(positions, other.positions)
-        && activePlayer == other.activePlayer;
+        return Objects.equals(players, other.players) && Objects.equals(positions, other.positions)
+                && activePlayer == other.activePlayer;
     }
 
-    private Box[] boxes = {
-        new StartBox(), // Start (1)
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new GooseBox(),  // The Goose (5)
-        new BridgeBox(12), // The Bridge (6)
-        new BlankBox(),
-        new BlankBox(),
-        new GooseBox(),  // The Goose (9)
-        new BlankBox(), // 10
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new GooseBox(),  // The Goose (14)
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new GooseBox(),  // The Goose (18)
-        new BlankBox(),
-        new BlankBox(), // 20
-        new BlankBox(),
-        new BlankBox(),
-        new GooseBox(),  // The Goose (23)
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new GooseBox(),  // The Goose (27)
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(), // 30
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(), // 40
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(), // 50
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(),
-        new BlankBox(), // 60
-        new BlankBox(),
-        new BlankBox(),
-        new FinishBox() // 63
-    };
+    private Box[] boxes = { new StartBox(1), new BlankBox(2), new BlankBox(3), new BlankBox(4), new GooseBox(5),
+            new BridgeBox(6, 12), new BlankBox(7), new BlankBox(8), new GooseBox(9), new BlankBox(10), new BlankBox(11),
+            new BlankBox(12), new BlankBox(13), new GooseBox(14), new BlankBox(15), new BlankBox(16), new BlankBox(17),
+            new GooseBox(18), new BlankBox(19), new BlankBox(20), new BlankBox(21), new BlankBox(22), new GooseBox(23),
+            new BlankBox(24), new BlankBox(25), new BlankBox(26), new GooseBox(27), new BlankBox(28), new BlankBox(29),
+            new BlankBox(30), new BlankBox(31), new BlankBox(32), new BlankBox(33), new BlankBox(34), new BlankBox(35),
+            new BlankBox(36), new BlankBox(37), new BlankBox(38), new BlankBox(39), new BlankBox(40), new BlankBox(41),
+            new BlankBox(42), new BlankBox(43), new BlankBox(44), new BlankBox(45), new BlankBox(46), new BlankBox(47),
+            new BlankBox(48), new BlankBox(49), new BlankBox(50), new BlankBox(51), new BlankBox(52), new BlankBox(53),
+            new BlankBox(54), new BlankBox(55), new BlankBox(56), new BlankBox(57), new BlankBox(58), new BlankBox(59),
+            new BlankBox(60), new BlankBox(61), new BlankBox(62), new FinishBox(63) };
 
 }

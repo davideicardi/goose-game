@@ -4,18 +4,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import icardi.goose.game.Dice;
 import icardi.goose.game.Player;
+import icardi.goose.game.boxes.Box;
+import icardi.goose.game.exceptions.DuplicatedPlayerException;
+import icardi.goose.game.exceptions.NotYourTurnException;
 
 public interface Board {
-    Box getBox(int position);
-    int boxCount();
-
-    Board addPlayer(Player player);
+    Board addPlayer(Player player) throws DuplicatedPlayerException;
     List<Player> getPlayers();
 
+    TurnResult turn(Player player, Dice[] dices) throws NotYourTurnException;
+
     Board movePlayer(Player player, int position);
-    int getPosition(Player player);
-    Map<Player, Integer> getPositions();
+    Box getPlayerBox(Player player);
 
     Optional<Player> playerTurn();
     Board changeTurn(Optional<Player> player);

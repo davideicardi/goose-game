@@ -13,8 +13,11 @@ import icardi.goose.game.commands.VoidCommand;
 
 public class PlayerTurnStateTest extends StateTestBase
 {
+    private Player peter = new Player("peter");
+    private Player clark = new Player("clark");
+
     PlayerTurnState target = new PlayerTurnState(
-        boardWithPlayers(new Player("peter"), new Player("clark"))
+        boardWithPlayers(peter, clark)
         );
 
     @Test
@@ -29,10 +32,8 @@ public class PlayerTurnStateTest extends StateTestBase
     @Test
     public void shouldRenderPositionAndTurn()
     {
-        Player peter = new Player("peter");
-        Player clark = new Player("clark");
         PlayerTurnState target = new PlayerTurnState(
-            boardWithPlayers(new Player("peter"), new Player("clark"))
+            boardWithPlayers(peter, clark)
             .movePlayer(peter, 6)
             .movePlayer(clark, 8)
             .changeTurn(Optional.of(clark))
@@ -50,7 +51,7 @@ public class PlayerTurnStateTest extends StateTestBase
         GameState returnState = target.process(game());
         assertTrue( returnState instanceof ErrorState );
 
-        assertTrue( ((ErrorState)returnState).getError().equals("It's not your turn") );
+        assertTrue( ((ErrorState)returnState).getError().equals("clark: it's not your turn") );
         assertTrue( ((ErrorState)returnState).getRollbackState().equals(target) );
 
         setupCommand(new MoveCommand("not-existing", 1, 2));
@@ -85,9 +86,11 @@ public class PlayerTurnStateTest extends StateTestBase
     @Test
     public void shouldMovePlayerWithMoveCommand()
     {
-        PlayerMovedState expectedStep = new PlayerMovedState(
-            boardWithPlayers(new Player("peter"), new Player("clark")),
-            new MoveCommand("peter", 1, 2));
+        PlayerTurnState expectedStep = new PlayerTurnState(
+            boardWithPlayers(peter, clark)
+            .movePlayer(peter, 4)
+            .changeTurn(Optional.of(clark))
+            );
 
         setupCommand(new MoveCommand("peter", 1, 2));
         GameState state = target.process(game());

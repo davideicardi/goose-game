@@ -2,11 +2,16 @@ package icardi.goose.game.states;
 
 import java.util.Objects;
 
+import icardi.goose.game.Dice;
 import icardi.goose.game.Game;
 import icardi.goose.game.Player;
 import icardi.goose.game.boards.Board;
+import icardi.goose.game.boards.TurnResult;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.MoveCommand;
+import icardi.goose.game.exceptions.InvalidDiceException;
+import icardi.goose.game.exceptions.NotYourTurnException;
+import icardi.goose.game.moves.Move;
 
 public class PlayerTurnState implements GameState {
 
@@ -25,7 +30,7 @@ public class PlayerTurnState implements GameState {
 
         board.getPlayers().forEach(player -> {
             boolean isYourTurn = Board.isPlayerTurn(board, player);
-            int playerPosition = board.getPosition(player);
+            int playerPosition = board.getPlayerBox(player).getPosition();
 
             stringBuilder.append(renderPlayer(player, playerPosition, isYourTurn));
             stringBuilder.append("\n");
@@ -41,25 +46,29 @@ public class PlayerTurnState implements GameState {
     public GameState process(Game game) {
         GameCommand command = game.input().waitForCommand();
         
-        final String INVALID_DICE_VALUE = "Invalid dice value, must be between 1 and 6";
-        final String IT_IS_NOT_YOUR_TURN = "It's not your turn";
+        try {
+            if (command instanceof MoveCommand) {
+                MoveCommand apc = (MoveCommand)command;
+    
+                Player movedPlayer = new Player(apc.getName());
 
-        if (command instanceof MoveCommand) {
-            MoveCommand apc = (MoveCommand)command;
+                Dice[] dices = new Dice[] { Dice.fromValue(apc.getDice1()), Dice.fromValue(apc.getDice2()) };
+                
+                TurnResult result = board.turn(movedPlayer, dices);
 
-            Player movedPlayer = new Player(apc.getName());
-            if (!Board.isPlayerTurn(board, movedPlayer)) {
-                return new ErrorState(IT_IS_NOT_YOUR_TURN, this); 
+                for (Move move : result.moves) {
+                    game.output().display(move.toString());
+                }
+    
+                return new PlayerTurnState(result.board);
             }
-
-            if (apc.getDice1() < 1 || apc.getDice1() > 6 || apc.getDice2() < 1 || apc.getDice2() > 6) {
-                return new ErrorState(INVALID_DICE_VALUE, this); 
-            }
-
-            return new PlayerMovedState(board, apc);
+    
+            return GameState.processDefault(command, this);
+        } catch (InvalidDiceException ex) {
+            return new ErrorState(ex.getMessage(), this);
+        } catch (NotYourTurnException ex) {
+            return new ErrorState(ex.getMessage(), this);
         }
-
-        return GameState.processCmd(command, this);
     }
 
     @Override

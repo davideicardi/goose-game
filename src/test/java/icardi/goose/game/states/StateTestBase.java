@@ -1,5 +1,6 @@
 package icardi.goose.game.states;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 import org.junit.Before;
@@ -11,6 +12,7 @@ import icardi.goose.game.boards.Board;
 import icardi.goose.game.boards.GooseBoard;
 import icardi.goose.game.commands.GameCommand;
 import icardi.goose.game.commands.VoidCommand;
+import icardi.goose.game.exceptions.DuplicatedPlayerException;
 import icardi.goose.game.inputs.GameInput;
 import icardi.goose.game.outputs.GameOutput;
 
@@ -60,7 +62,11 @@ public abstract class StateTestBase {
         Board board = new GooseBoard();
 
         for (Player player : players) {
-            board = board.addPlayer(player);
+            try {
+                board = board.addPlayer(player);
+            } catch (DuplicatedPlayerException ex) {
+                fail();
+            }
         }
 
         return board;

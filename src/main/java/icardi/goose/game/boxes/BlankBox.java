@@ -1,0 +1,20 @@
+package icardi.goose.game.boxes;
+
+public class BlankBox implements Box {
+    private final int position;
+
+    public BlankBox(final int position) {
+        super();
+        this.position = position;
+    }
+
+    @Override
+    public int getPosition() {
+        return position;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getPosition());
+    }
+}

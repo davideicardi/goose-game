@@ -10,7 +10,7 @@ public interface GameState
 
     GameState process(Game game);
 
-    static GameState processCmd(GameCommand command, GameState currentState) {
+    static GameState processDefault(GameCommand command, GameState currentState) {
         if (command instanceof ExitCommand) {
             return new ExitState();
         }

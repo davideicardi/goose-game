@@ -5,6 +5,7 @@ import icardi.goose.game.Player;
 import icardi.goose.game.boards.Board;
 import icardi.goose.game.commands.AddPlayerCommand;
 import icardi.goose.game.commands.GameCommand;
+import icardi.goose.game.exceptions.DuplicatedPlayerException;
 
 public class WaitingForPlayersState implements GameState {
 
@@ -26,20 +27,25 @@ public class WaitingForPlayersState implements GameState {
 
     @Override
     public GameState process(Game game) {
-        // Here I can easily support more players
-        if (board.getPlayers().size() == 2) {
-            return new PlayerTurnState(board);
+        try {
+            // Here I can easily support more players
+            if (board.getPlayers().size() == 2) {
+                return new PlayerTurnState(board);
+            }
+
+            GameCommand command = game.input().waitForCommand();
+
+            if (command instanceof AddPlayerCommand) {
+                AddPlayerCommand apc = (AddPlayerCommand)command;
+                Board newBoard = board.addPlayer(new Player(apc.getName()));
+                return new WaitingForPlayersState(newBoard);
+            }
+
+            return GameState.processDefault(command, this);
+
+        } catch (DuplicatedPlayerException ex) {
+            return new ErrorState(ex.getMessage(), this);
         }
-
-        GameCommand command = game.input().waitForCommand();
-
-        if (command instanceof AddPlayerCommand) {
-            AddPlayerCommand apc = (AddPlayerCommand)command;
-            Board newBoard = board.addPlayer(new Player(apc.getName()));
-            return new WaitingForPlayersState(newBoard);
-        }
-
-        return GameState.processCmd(command, this);
     }
 
     @Override
