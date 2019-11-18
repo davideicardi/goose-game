@@ -1,6 +1,6 @@
 # goose-game
 
-A Java 11 exercise. Implement a console goose-game.
+The Goose Game written as a console java application.
 
 
 ## Implementation details
@@ -21,7 +21,7 @@ Requirements:
 Development environment:
 
 - Visual Studio Code
-- OpenJDK 11
+- OpenJDK 1.8
 - Ubuntu Linux
 
 Run unit tests:
@@ -31,4 +31,4 @@ Run unit tests:
 Run console application:
 
     mvn compile
-    $JAVA_HOME/bin/java -cp ./target/classes icardi.goose.game.App
+    java -cp ./target/classes icardi.goose.game.App

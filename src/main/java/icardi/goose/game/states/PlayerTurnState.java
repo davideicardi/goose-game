@@ -1,5 +1,6 @@
 package icardi.goose.game.states;
 
+import java.util.Collections;
 import java.util.Objects;
 
 import icardi.goose.game.Dice;
@@ -112,7 +113,7 @@ public class PlayerTurnState implements GameState {
 
         return String.format(
             "%s%s (%s) %s",
-            " ".repeat(position),
+            String.join("", Collections.nCopies(position, " ")),
             player.getName(),
             position,
             isYourTurn ? IS_YOUR_TURN : ""
