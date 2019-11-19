@@ -32,6 +32,7 @@ The Goose Game written as a console java application.
   - goose (single or multiple)
   - prank
   - bounce
+- emoji inside console (just for fun :smiley:, only supported on Linux console, you will see `?` otherwise)
 
 ## Requirements
 
