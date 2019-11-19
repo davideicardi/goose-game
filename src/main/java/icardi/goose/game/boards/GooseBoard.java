@@ -21,6 +21,7 @@ import icardi.goose.game.moves.BounceMove;
 import icardi.goose.game.moves.GooseMove;
 import icardi.goose.game.moves.JumpMove;
 import icardi.goose.game.moves.Move;
+import icardi.goose.game.moves.PrankMove;
 import icardi.goose.game.moves.RollsMove;
 
 public class GooseBoard implements Board {
@@ -121,6 +122,8 @@ public class GooseBoard implements Board {
         ArrayList<Move> moves = new ArrayList<Move>();
         generateMoves(moves, rollsMove, expectedToPosition);
 
+        applyPrank(moves, from);
+
         Board newBoard = applyMoves(moves)
         .changeTurn(Board.nextPlayer(this));
 
@@ -163,6 +166,22 @@ public class GooseBoard implements Board {
                 int expectedGooseTo = gooseBox.getPosition() + Dice.totals(rollsMove.get().getDices());
                 Move gooseMove = new GooseMove(move.getPlayer(), getBox(expectedGooseTo));
                 generateMoves(moves, gooseMove, expectedGooseTo);
+            }
+        }
+    }
+
+    private void applyPrank(List<Move> moves, Box startingBox) {
+        Move lastMove = moves.get(moves.size() - 1);
+
+        // Prank
+        for (Player player : players) {
+            if (player.equals(lastMove.getPlayer())) {
+                continue;
+            }
+
+            boolean isInTheSameBox = getPlayerBox(player).equals(lastMove.getDestination());
+            if (isInTheSameBox) {
+                moves.add(new PrankMove(player, lastMove.getDestination(), startingBox));
             }
         }
     }
