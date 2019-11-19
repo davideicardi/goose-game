@@ -13,22 +13,28 @@ The Goose Game written as a console java application.
 
 - all operations are implemented with TDD (unit tests)
 - allow to rearrange boxes (we can add more Gooses spaces, Bridges, ...)
-- allow to add more then 2 players (currently configured with 2)
-- allow to use more then 2 dices (currently configured with 2)
-- game rule are all written inside `GooseBoard.java`, with the corresponding unit tests
+- allow to add more than 2 players (currently configured with 2)
+- allow to use more than 2 dices (currently configured with 2)
+- game rules are all written inside `GooseBoard.java`, with the corresponding unit tests
 
-## Usage
-
-Requirements:
+## Requirements
 
 - Java 1.8
 - Maven 3.6.0
 
-Development environment:
+## Development environment
 
 - Visual Studio Code
 - OpenJDK 1.8
 - Ubuntu Linux
+
+## Usage
+
+Clone the repository.
+
+Compile:
+
+    mvn compile
 
 Run unit tests:
 
@@ -36,5 +42,4 @@ Run unit tests:
 
 Run console application:
 
-    mvn compile
     java -cp ./target/classes icardi.goose.game.App
