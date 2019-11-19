@@ -61,6 +61,10 @@ public class GooseBoard implements Board {
     }
 
     private Box getBox(int position) {
+        if (position > boxes.length) {
+            return boxes[boxes.length - 1];
+        }
+        
         return boxes[position - 1];
     }
 
@@ -105,27 +109,43 @@ public class GooseBoard implements Board {
             throw new NotYourTurnException(String.format("%s: it's not your turn", player.getName()));
         }
 
-        List<Move> moves = new ArrayList<>();
-
         int delta = Dice.totals(dices);
 
         Box from = getPlayerBox(player);
         int expectedToPosition = from.getPosition() + delta;
-        int actualToPosition = Math.min(expectedToPosition, boxes.length);
-        int bouncesMoves = expectedToPosition - actualToPosition;
-        Box to = getBox(actualToPosition);
+        Box to = getBox(expectedToPosition);
 
-        moves.add(new RollsMove(player, dices, from, to));
-        if (bouncesMoves > 0) { // bounce
-            to = getBox(actualToPosition - bouncesMoves);
-            moves.add(new BounceMove(player, from, to));
-        }
+        Move rollsMove = new RollsMove(player, dices, from, to);
+        List<Move> moves = generateMoves(rollsMove, expectedToPosition);
 
-        Board newBoard = 
-        movePlayer(player, to.getPosition())
+        Board newBoard = applyMoves(moves)
         .changeTurn(Board.nextPlayer(this));
 
         return new TurnResult(newBoard, moves);
+    }
+
+    private List<Move> generateMoves(Move move, int expectedToPosition) {
+        List<Move> moves = new ArrayList<>();
+        moves.add(move);
+
+        int actualToPosition = move.getDestination().getPosition();
+        int bouncesMoves = expectedToPosition - actualToPosition;
+        if (bouncesMoves > 0) { // bounce
+            Box bounceTo = getBox(actualToPosition - bouncesMoves);
+            moves.add(new BounceMove(move.getPlayer(), move.getDestination(), bounceTo));
+        }
+
+        return moves;
+    }
+
+    private Board applyMoves(List<Move> moves) {
+        Board currentBoard = this;
+        for (Move move : moves) {
+            currentBoard = currentBoard
+            .movePlayer(move.getPlayer(), move.getDestination().getPosition());
+        }
+
+        return currentBoard;
     }
 
     @Override

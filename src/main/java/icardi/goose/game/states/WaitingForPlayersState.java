@@ -19,9 +19,16 @@ public class WaitingForPlayersState implements GameState {
     @Override
     public String render()
     {
+        String playerNames = String.join(
+            ", ",
+            this.board.getPlayers()
+            .stream().map(p -> p.getName())
+            .toArray(String[]::new)
+            );
+
         return String.format(
-            "👨  Number of players: %s\nInsert a player by typing: `add player {yourName}`",
-            this.board.getPlayers().size()
+            "👨  players: %s\nInsert a player by typing: `add player {yourName}`",
+            playerNames
         );
     }
 

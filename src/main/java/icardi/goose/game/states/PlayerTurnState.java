@@ -33,8 +33,6 @@ public class PlayerTurnState implements GameState {
     public String render() {
         StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append("---------------\n");
-
         board.getPlayers().forEach(player -> {
             boolean isYourTurn = Board.isPlayerTurn(board, player);
             int playerPosition = board.getPlayerBox(player).getPosition();
@@ -43,7 +41,6 @@ public class PlayerTurnState implements GameState {
             stringBuilder.append("\n");
         });
 
-        stringBuilder.append("---------------\n");
         stringBuilder.append(" move by typing `move {playerName}`");
 
         return stringBuilder.toString();

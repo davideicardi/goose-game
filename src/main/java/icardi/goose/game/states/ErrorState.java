@@ -19,7 +19,7 @@ public class ErrorState implements GameState {
 
     @Override
     public String render() {
-        return String.format(" %s\n%s", error, rollbackState.render());
+        return String.format("🔴  %s\n%s", error, rollbackState.render());
     }
 
     @Override

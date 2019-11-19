@@ -9,7 +9,7 @@ TODO
 - state machine (similar to Akka FSM)
 - unit tests
 - case classes like (commands, state)
-- over enginered
+- rearrange the box positions and box numbers
 
 ## Usage
 
