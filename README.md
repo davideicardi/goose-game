@@ -2,23 +2,26 @@
 
 The Goose Game written as a console java application.
 
+[![asciicast](https://asciinema.org/a/Hfq5fxmgiV65GIEVYjdQGR1OF.svg)](https://asciinema.org/a/Hfq5fxmgiV65GIEVYjdQGR1OF)
 
 ## Implementation details
 
-TODO
-- state machine (similar to Akka FSM)
-- unit tests
-- case classes like (commands, state)
-- rearrange the box positions and box numbers
-- add more players (> 2)
-- add more dices (> 2)
-- all game logic is inside GooseBoard.java, with the corresponding tests.
+- written in plain Java
+- implemented as a state machine
+
+![state-machine](docs/state-machine.png)
+
+- all operations are implemented with TDD (unit tests)
+- allow to rearrange boxes (we can add more Gooses spaces, Bridges, ...)
+- allow to add more then 2 players (currently configured with 2)
+- allow to use more then 2 dices (currently configured with 2)
+- game rule are all written inside `GooseBoard.java`, with the corresponding unit tests
 
 ## Usage
 
 Requirements:
 
-- **Java JDK 11**
+- Java 1.8
 - Maven 3.6.0
 
 Development environment:
