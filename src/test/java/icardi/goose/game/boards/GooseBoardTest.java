@@ -11,6 +11,7 @@ import icardi.goose.game.exceptions.DuplicatedPlayerException;
 import icardi.goose.game.exceptions.InvalidDiceException;
 import icardi.goose.game.exceptions.NotYourTurnException;
 import icardi.goose.game.moves.BounceMove;
+import icardi.goose.game.moves.JumpMove;
 import icardi.goose.game.moves.RollsMove;
 
 public class GooseBoardTest 
@@ -122,5 +123,21 @@ public class GooseBoardTest
         assertEquals(2, result.moves.size());
         assertTrue(result.moves.get(0) instanceof RollsMove);
         assertTrue(result.moves.get(1) instanceof BounceMove);
+    }
+
+    @Test()
+    public void shouldJumpTo12IfLandingOnTheBridge()
+    throws DuplicatedPlayerException, InvalidDiceException, NotYourTurnException
+    {
+        TurnResult result = new GooseBoard()
+        .addPlayer(donald)
+        .addPlayer(duck)
+        .movePlayer(donald, 4)
+        .turn(donald, Dice.fromValues(1,1));
+        
+        assertEquals(12, result.board.getPlayerBox(donald).getPosition() );
+        assertEquals(2, result.moves.size());
+        assertTrue(result.moves.get(0) instanceof RollsMove);
+        assertTrue(result.moves.get(1) instanceof JumpMove);
     }
 }

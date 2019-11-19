@@ -38,7 +38,7 @@ public class BounceMove implements Move {
     @Override
     public String toString() {
         return String.format(
-            "%s bounces! %s returns to %s",
+            "%s bounces! %s returns to %s.",
             player.getName(),
             player.getName(),
             to.toString()

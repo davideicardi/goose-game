@@ -18,6 +18,7 @@ import icardi.goose.game.boxes.StartBox;
 import icardi.goose.game.exceptions.DuplicatedPlayerException;
 import icardi.goose.game.exceptions.NotYourTurnException;
 import icardi.goose.game.moves.BounceMove;
+import icardi.goose.game.moves.JumpMove;
 import icardi.goose.game.moves.Move;
 import icardi.goose.game.moves.RollsMove;
 
@@ -128,11 +129,22 @@ public class GooseBoard implements Board {
         List<Move> moves = new ArrayList<>();
         moves.add(move);
 
+        // Bounce
         int actualToPosition = move.getDestination().getPosition();
         int bouncesMoves = expectedToPosition - actualToPosition;
         if (bouncesMoves > 0) { // bounce
             Box bounceTo = getBox(actualToPosition - bouncesMoves);
             moves.add(new BounceMove(move.getPlayer(), move.getDestination(), bounceTo));
+        }
+
+        // Bridge
+        Box landingBox = moves.get(moves.size() - 1).getDestination();
+        if (landingBox instanceof BridgeBox) {
+            BridgeBox bridgeBox = (BridgeBox)landingBox;
+            int expectedJumpTo = bridgeBox.getBridgeTo();
+            Move jumpMove = new JumpMove(move.getPlayer(), getBox(expectedJumpTo));
+            List<Move> subMoves = generateMoves(jumpMove, expectedJumpTo);
+            moves.addAll(subMoves);
         }
 
         return moves;
