@@ -21,7 +21,7 @@ public class BridgeBox implements Box {
 
     @Override
     public String toString() {
-        return "The Bridge";
+        return "The Bridge 🌉";
     }
 
     @Override

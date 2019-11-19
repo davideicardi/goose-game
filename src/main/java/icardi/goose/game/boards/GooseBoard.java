@@ -18,6 +18,7 @@ import icardi.goose.game.boxes.StartBox;
 import icardi.goose.game.exceptions.DuplicatedPlayerException;
 import icardi.goose.game.exceptions.NotYourTurnException;
 import icardi.goose.game.moves.BounceMove;
+import icardi.goose.game.moves.GooseMove;
 import icardi.goose.game.moves.JumpMove;
 import icardi.goose.game.moves.Move;
 import icardi.goose.game.moves.RollsMove;
@@ -117,7 +118,8 @@ public class GooseBoard implements Board {
         Box to = getBox(expectedToPosition);
 
         Move rollsMove = new RollsMove(player, dices, from, to);
-        List<Move> moves = generateMoves(rollsMove, expectedToPosition);
+        ArrayList<Move> moves = new ArrayList<Move>();
+        generateMoves(moves, rollsMove, expectedToPosition);
 
         Board newBoard = applyMoves(moves)
         .changeTurn(Board.nextPlayer(this));
@@ -125,29 +127,44 @@ public class GooseBoard implements Board {
         return new TurnResult(newBoard, moves);
     }
 
-    private List<Move> generateMoves(Move move, int expectedToPosition) {
-        List<Move> moves = new ArrayList<>();
+    private void generateMoves(ArrayList<Move> moves, Move move, int expectedToPosition) {
         moves.add(move);
+
+        Box landingBox = move.getDestination();
 
         // Bounce
         int actualToPosition = move.getDestination().getPosition();
         int bouncesMoves = expectedToPosition - actualToPosition;
         if (bouncesMoves > 0) { // bounce
-            Box bounceTo = getBox(actualToPosition - bouncesMoves);
-            moves.add(new BounceMove(move.getPlayer(), move.getDestination(), bounceTo));
+            int expectedBounceTo = actualToPosition - bouncesMoves;
+            Box bounceTo = getBox(expectedBounceTo);
+            Move bounceMove = new BounceMove(move.getPlayer(), move.getDestination(), bounceTo);
+            generateMoves(moves, bounceMove, expectedBounceTo);
         }
 
         // Bridge
-        Box landingBox = moves.get(moves.size() - 1).getDestination();
-        if (landingBox instanceof BridgeBox) {
+        else if (landingBox instanceof BridgeBox) {
             BridgeBox bridgeBox = (BridgeBox)landingBox;
             int expectedJumpTo = bridgeBox.getBridgeTo();
             Move jumpMove = new JumpMove(move.getPlayer(), getBox(expectedJumpTo));
-            List<Move> subMoves = generateMoves(jumpMove, expectedJumpTo);
-            moves.addAll(subMoves);
+            generateMoves(moves, jumpMove, expectedJumpTo);
         }
+        
+        // Goose
+        else if (landingBox instanceof GooseBox) {
+            GooseBox gooseBox = (GooseBox)landingBox;
 
-        return moves;
+            Optional<RollsMove> rollsMove = moves.stream()
+            .filter(m -> m instanceof RollsMove && m.getPlayer().equals(move.getPlayer()))
+            .findAny()
+            .map(x -> (RollsMove)x);
+            
+            if (rollsMove.isPresent()) {
+                int expectedGooseTo = gooseBox.getPosition() + Dice.totals(rollsMove.get().getDices());
+                Move gooseMove = new GooseMove(move.getPlayer(), getBox(expectedGooseTo));
+                generateMoves(moves, gooseMove, expectedGooseTo);
+            }
+        }
     }
 
     private Board applyMoves(List<Move> moves) {

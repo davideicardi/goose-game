@@ -15,7 +15,7 @@ public class GooseBox implements Box {
 
     @Override
     public String toString() {
-        return String.format("%s, The Goose", getPosition());
+        return String.format("%s, The Goose 🦢", getPosition());
     }
 
 

@@ -11,6 +11,7 @@ import icardi.goose.game.exceptions.DuplicatedPlayerException;
 import icardi.goose.game.exceptions.InvalidDiceException;
 import icardi.goose.game.exceptions.NotYourTurnException;
 import icardi.goose.game.moves.BounceMove;
+import icardi.goose.game.moves.GooseMove;
 import icardi.goose.game.moves.JumpMove;
 import icardi.goose.game.moves.RollsMove;
 
@@ -72,10 +73,10 @@ public class GooseBoardTest
         .addPlayer(duck)
         .turn(donald, Dice.fromValues(1,1)).board
         .turn(duck, Dice.fromValues(2,1)).board
-        .turn(donald, Dice.fromValues(1,1)).board
+        .turn(donald, Dice.fromValues(3,2)).board
         .turn(duck, Dice.fromValues(2,1));
         
-        assertEquals(5, result.board.getPlayerBox(donald).getPosition() );
+        assertEquals(8, result.board.getPlayerBox(donald).getPosition() );
         assertEquals(7, result.board.getPlayerBox(duck).getPosition() );
         assertEquals(donald, result.board.playerTurn().get() );
     }
@@ -139,5 +140,38 @@ public class GooseBoardTest
         assertEquals(2, result.moves.size());
         assertTrue(result.moves.get(0) instanceof RollsMove);
         assertTrue(result.moves.get(1) instanceof JumpMove);
+    }
+
+    @Test()
+    public void shouldMoveAgainIfLandingOnTheGoose()
+    throws DuplicatedPlayerException, InvalidDiceException, NotYourTurnException
+    {
+        TurnResult result = new GooseBoard()
+        .addPlayer(donald)
+        .addPlayer(duck)
+        .movePlayer(donald, 3)
+        .turn(donald, Dice.fromValues(1,1));
+        
+        assertEquals(7, result.board.getPlayerBox(donald).getPosition() );
+        assertEquals(2, result.moves.size());
+        assertTrue(result.moves.get(0) instanceof RollsMove);
+        assertTrue(result.moves.get(1) instanceof GooseMove);
+    }
+
+    @Test()
+    public void shouldMoveAgainIfLandingOnTheGooseAndPerform2Jumps()
+    throws DuplicatedPlayerException, InvalidDiceException, NotYourTurnException
+    {
+        TurnResult result = new GooseBoard()
+        .addPlayer(donald)
+        .addPlayer(duck)
+        .movePlayer(donald, 10)
+        .turn(donald, Dice.fromValues(2,2));
+        
+        assertEquals(22, result.board.getPlayerBox(donald).getPosition() );
+        assertEquals(3, result.moves.size());
+        assertTrue(result.moves.get(0) instanceof RollsMove);
+        assertTrue(result.moves.get(1) instanceof GooseMove);
+        assertTrue(result.moves.get(2) instanceof GooseMove);
     }
 }

@@ -10,6 +10,9 @@ TODO
 - unit tests
 - case classes like (commands, state)
 - rearrange the box positions and box numbers
+- add more players (> 2)
+- add more dices (> 2)
+- all game logic is inside GooseBoard.java, with the corresponding tests.
 
 ## Usage
 
